@@ -1,0 +1,30 @@
+name: Build and deploy test.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [test]
+    paths-ignore:
+      - .github/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: helsingborg-stad/municipio-deploy/4.1@master
+        with:
+          deploy-host: ${{ secrets.DEPLOY_REMOTE_HOST_TEST }}
+          deploy-port: ${{ secrets.DEPLOY_REMOTE_PORT_TEST }}
+          deploy-host-path: ${{ secrets.DEPLOY_REMOTE_PATH_TEST  }}
+          deploy-host-backup-path: ${{ secrets.DEPLOY_REMOTE_BACKUP_DIR_TEST }}
+          deploy-host-user: ${{ secrets.DEPLOY_REMOTE_USER_TEST }}
+          deploy-host-user-key: ${{ secrets.DEPLOY_KEY_TEST }}
+          deploy-host-web-server-user: ${{ secrets.WEB_SERVER_USER_TEST }}
+          deploy-host-pagecache-path: ${{ secrets.DEPLOY_LS_PAGECACHE_PATH }}
+          php-version: ${{ secrets.PHP_VERSION }}
+          kill-lsphp: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          acf-url: ${{ secrets.ACF_URL }}
