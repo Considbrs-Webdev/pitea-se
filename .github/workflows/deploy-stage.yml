@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
 
     steps:
     - uses: actions/checkout@v2
@@ -25,5 +25,5 @@ jobs:
         deploy-host-web-server-user: ${{ secrets.WEB_SERVER_USER_STAGE }}
         deploy-host-pagecache-path: ${{ secrets.DEPLOY_LS_PAGECACHE_PATH_STAGE }}
         php-version: ${{ secrets.PHP_VERSION }}
-        kill-lsphp: true
+        kill-lsphp: false
         github-token: ${{ secrets.GITHUB_TOKEN }}
