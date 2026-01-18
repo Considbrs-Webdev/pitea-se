@@ -1,0 +1,8 @@
+humans.txt
+index.php
+vendor
+wp
+wp-admin
+wp-config.php
+wp-content
+wp-login.php

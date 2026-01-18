@@ -1,0 +1,125 @@
+name: Deploy using ZIP file as intermediate
+
+on:
+  workflow_dispatch:
+
+env:
+  PHP_VERSION: ${{ vars.PHP_VERSION }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup PHP with composer v2
+        uses: shivammathur/setup-php@v2
+        id: setup-php
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          tools: composer:v2
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache composer packages
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress --no-suggest --optimize-autoloader --classmap-authoritative
+        shell: bash
+
+      - name: Write composer versions info file
+        run: composer show > composer.versions.md
+        shell: bash
+
+      - name: Inject npm token (optional)
+        run: |
+          echo "@helsingborg-stad:registry=https://npm.pkg.github.com/helsingborg-stad" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+        shell: bash
+
+      - name: Download ACF plugin
+        run: |
+          wget "${{ secrets.ACF_URL }}" -O acf.zip
+          unzip -q acf.zip -d wp-content/plugins/
+          rm -f acf.zip
+        shell: bash
+
+      - name: Execute build scripts
+        run: php ./build.php --cleanup --no-composer-in-child-packages --install-npm
+        shell: bash
+
+      - name: Cleanup .npmrc
+        run: rm -f ~/.npmrc
+        shell: bash
+
+      - name: Create release tarball (include-list aware)
+        run: |
+          set -euo pipefail
+          TMPDIR=$(mktemp -d)
+          INCLUDE_FILE=release-include-list.txt
+          if [ -f "$INCLUDE_FILE" ]; then
+            echo "Using include list at repository root: $INCLUDE_FILE"
+            > /tmp/include.tmp
+            while IFS= read -r path; do
+              [ -z "$path" ] && continue
+              if [ -d "$path" ]; then
+                # include the directory itself (so empty dirs are preserved)
+                printf "%s/\n" "$path" >> /tmp/include.tmp
+                # include all files under the directory
+                find "$path" -type f -print >> /tmp/include.tmp
+              else
+                printf "%s\n" "$path" >> /tmp/include.tmp
+              fi
+            done < <(awk '!/^\s*#/ && NF {print}' "$INCLUDE_FILE")
+            rsync -a --delete --files-from=/tmp/include.tmp ./ "$TMPDIR/"
+            rm -f /tmp/include.tmp
+            echo "Included $(wc -l < /tmp/include.tmp || true) paths."
+          else
+            echo "No include list found; snapshotting working tree with default excludes"
+            rsync -a --delete --exclude='.git' --exclude='.github' --exclude='node_modules' --exclude='build' ./ "$TMPDIR/"
+          fi
+          tar -C "$TMPDIR" -czf release.tar.gz .
+          rm -rf "$TMPDIR"
+        shell: bash
+
+      - name: Upload package via FTP
+        if: ${{ vars.FTP_PROTOCOL == 'ftp' }}
+        run: |
+          set -euo pipefail
+          REMOTE_DIR="${{ vars.FTP_REMOTE_DIR }}"
+          if [ -z "${REMOTE_DIR}" ] || [ "${REMOTE_DIR}" = "null" ]; then
+            TARGET="release.tar.gz"
+          else
+            TARGET="$REMOTE_DIR/release.tar.gz"
+          fi
+          echo "Uploading release.tar.gz to ftp://${{ vars.FTP_HOST }}/$TARGET"
+          curl --fail --silent --show-error --ftp-create-dirs -T release.tar.gz "ftp://${{ vars.FTP_HOST }}/$TARGET" --user "${{ vars.FTP_USER }}:${{ secrets.FTP_PASSWORD }}"
+        shell: bash
+
+      - name: Upload package via SFTP
+        if: ${{ vars.FTP_PROTOCOL == 'sftp' }}
+        run: |
+          set -euo pipefail
+          sudo apt-get update -y
+          sudo apt-get install -y sshpass
+          REMOTE_DIR="${{ vars.FTP_REMOTE_DIR }}"
+          if [ -z "${REMOTE_DIR}" ] || [ "${REMOTE_DIR}" = "null" ]; then
+            REMOTE_DIR='.'
+          fi
+          echo "Uploading release.tar.gz to sftp://${{ vars.FTP_HOST }} (remote dir: $REMOTE_DIR)"
+          sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no release.tar.gz "${{ vars.FTP_USER }}@${{ vars.FTP_HOST }}:$REMOTE_DIR/"
+        shell: bash
