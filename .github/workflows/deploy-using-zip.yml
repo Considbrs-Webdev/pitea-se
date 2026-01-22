@@ -86,8 +86,9 @@ jobs:
               fi
             done < <(awk '!/^\s*#/ && NF {print}' "$INCLUDE_FILE")
             rsync -a --delete --files-from=/tmp/include.tmp ./ "$TMPDIR/"
+            COUNT=$(wc -l < /tmp/include.tmp || true)
             rm -f /tmp/include.tmp
-            echo "Included $(wc -l < /tmp/include.tmp || true) paths."
+            echo "Included $COUNT paths."
           else
             echo "No include list found; snapshotting working tree with default excludes"
             rsync -a --delete --exclude='.git' --exclude='.github' --exclude='node_modules' --exclude='build' ./ "$TMPDIR/"
