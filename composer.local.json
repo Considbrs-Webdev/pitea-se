@@ -2,5 +2,58 @@
   "name": "municipio-se/municipio-deployment-custom",
   "license": "MIT",
   "description": "Additions for you own install of municipo.",
-  "require": {}
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/modularity-service-info"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/pitea-customisation"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/modularity-noticeboard"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/modularity-municipal-calendar"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/modularity-quick-links"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/modularity-step-by-step"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/modularity-latest-events"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/modularity-link-cards"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/modularity-pitea-hero"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/modularity-toc"
+    }
+  ],
+  "require": {
+    "considbrs-webdev/pitea-customisation": "dev-dev",
+    "considbrs-webdev/modularity-latest-events": "dev-dev",
+    "considbrs-webdev/modularity-link-cards": "dev-dev",
+    "considbrs-webdev/modularity-municipal-calendar": "dev-dev",
+    "considbrs-webdev/modularity-noticeboard": "dev-dev",
+    "considbrs-webdev/modularity-pitea-hero": "dev-dev",
+    "considbrs-webdev/modularity-quick-links": "dev-dev",
+    "considbrs-webdev/modularity-service-info": "dev-dev",
+    "considbrs-webdev/modularity-step-by-step": "dev-dev",
+    "considbrs-webdev/modularity-toc": "dev-dev"
+  }
 }
