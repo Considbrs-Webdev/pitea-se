@@ -1,4 +1,4 @@
-name: Deploy using ZIP file as intermediate
+name: Deploy using ZIP file as intermediate (self-hosted runner)
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
 
     steps:
       - name: Checkout repository
