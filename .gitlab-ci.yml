@@ -11,13 +11,14 @@ stages: [test]
 test:
   before_script:
     - composer config -g github-oauth.github.com "$GITHUB_TOKEN"
+    - composer config -g --list | grep github-oauth || true
   script:
     - php -v
     - node -v
     - composer --version
-    - composer install --no-interaction --prefer-dist --no-progress --no-suggest --optimize-autoloader --classmap-authoritative
-  artifacts:
-    paths:
-      - composer.json
-    expire_in: 1 week
-    when: always
+    - composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader --classmap-authoritative -vvv
+  # artifacts:
+  #   paths:
+  #     - wp-content
+  #   expire_in: 1 week
+  #   when: always
