@@ -14,3 +14,8 @@ test:
     - node -v
     - composer --version
     - composer install --no-interaction --prefer-dist --no-progress --no-suggest --optimize-autoloader --classmap-authoritative
+  artifacts:
+    paths:
+      - composer.json
+    expire_in: 1 week
+    when: always
