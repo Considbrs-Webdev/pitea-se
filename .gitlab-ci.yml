@@ -1,0 +1,16 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
+    - when: never
+
+image: $CI_REGISTRY_IMAGE/ubuntu2404-php83-node24:1
+
+stages: [test]
+
+test:
+  script:
+    - php -v
+    - node -v
+    - composer --version
+    - composer install --no-interaction --prefer-dist --no-progress --no-suggest --optimize-autoloader --classmap-authoritative
