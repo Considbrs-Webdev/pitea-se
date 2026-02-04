@@ -74,13 +74,13 @@ class ComposerLocalMerge
             return;
         }
 
-        try {
+        /* try {
             $this->restore();
             echo "Successfully restored original files\n";
         } catch (Exception $e) {
             echo "ERROR during restore: " . $e->getMessage() . "\n";
             exit(1);
-        }
+        } */
     }
 
     /**
