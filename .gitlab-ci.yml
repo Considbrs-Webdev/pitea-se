@@ -4,21 +4,31 @@ workflow:
       when: always
     - when: never
 
-image: $CI_REGISTRY_IMAGE/ubuntu2404-php83-node24:1
+image: $CI_REGISTRY_IMAGE/ubuntu2404-php83-node24:2
 
 stages: [test]
 
 test:
   before_script:
     - composer config -g github-oauth.github.com "$GITHUB_TOKEN"
-    - composer config -g --list | grep github-oauth || true
+    - echo "@helsingborg-stad:registry=https://npm.pkg.github.com/helsingborg-stad" >> ~/.npmrc
+    - echo "//npm.pkg.github.com/:_authToken=$GITHUB_TOKEN" >> ~/.npmrc
+    - wget "$ACF_URL" -O acf.zip
+    - unzip -q acf.zip -d wp-content/mu-plugins/
+    - rm -f acf.zip
   script:
     - php -v
     - node -v
     - composer --version
-    - composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader --classmap-authoritative -vvv
-  # artifacts:
-  #   paths:
-  #     - wp-content
-  #   expire_in: 1 week
-  #   when: always
+    - php composer-local-merge.php pre-install
+    - composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader --classmap-authoritative
+    - composer show > composer.versions.md
+    - php ./build.php --cleanup --no-composer-in-child-packages --install-npm
+  after_script:
+    - rm -f ~/.npmrc
+  artifacts:
+    paths:
+      - composer.versions.md
+      - wp-content
+    expire_in: 1 week
+    when: always

@@ -38,6 +38,12 @@ class ComposerLocalMerge
     {
         echo "=== Composer Local Merge: Pre-Install ===\n";
 
+        // If a merge is already active, skip to avoid backing up/overwriting backups
+        if (file_exists($this->flagFile)) {
+            echo "Merge already active - skipping pre-install\n";
+            return;
+        }
+
         $localPath = $this->getPath(self::COMPOSER_LOCAL_JSON);
         
         if (!file_exists($localPath)) {
