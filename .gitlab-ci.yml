@@ -9,6 +9,8 @@ image: $CI_REGISTRY_IMAGE/ubuntu2404-php83-node24:1
 stages: [test]
 
 test:
+  before_script:
+    - composer config -g github-oauth.github.com "$GITHUB_TOKEN"
   script:
     - php -v
     - node -v
