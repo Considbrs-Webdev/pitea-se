@@ -41,11 +41,16 @@
     },
     {
       "type": "vcs",
+      "url": "https://github.com/Considbrs-Webdev/modularity-arcgis-map"
+    },
+    {
+      "type": "vcs",
       "url": "https://github.com/considbrs-webdev/modularity-toc"
     }
   ],
   "require": {
     "considbrs-webdev/pitea-customisation": "dev-dev",
+    "considbrs-webdev/modularity-arcgis-map": "dev-dev",
     "considbrs-webdev/modularity-latest-events": "dev-dev",
     "considbrs-webdev/modularity-link-cards": "dev-dev",
     "considbrs-webdev/modularity-municipal-calendar": "dev-dev",
