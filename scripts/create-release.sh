@@ -84,15 +84,19 @@ tar -xzf "$TAR_PATH" -C "$TARGET_DIR"
 
 # Adding config symlink
 echo "Adding config symlink inside release"
-ln -sfn ../../config "$TARGET_DIR/config"
+ln -sfn /webb/municipio/config "$TARGET_DIR/config"
 
 # Adding .htaccess symlink
 echo "Adding .htaccess symlink inside release"
-ln -sfn ../../config/.htaccess "$TARGET_DIR/.htaccess"
+ln -sfn /webb/municipio/config/.htaccess "$TARGET_DIR/.htaccess"
 
 # Adding uploads symlink
 echo "Adding uploads symlink inside release"
 ln -sfn /webb/municipio/uploads "$TARGET_DIR/wp-content/uploads"
+
+# Adding CICD symlink
+echo "Adding uploads symlink inside release"
+ln -sfn /webb/municipio/cicd "$TARGET_DIR/cicd"
 
 # Update symlink `current-release` at repository root to point to new release
 SYMLINK_PATH="$ROOT_DIR/htdocs"
