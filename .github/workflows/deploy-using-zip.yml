@@ -44,7 +44,7 @@ jobs:
       - name: Combine composer.json and composer.local.json
         run: php ./composer-local-merge.php pre-install
         shell: bash
-        
+
       - name: Install composer dependencies
         run: composer install --no-interaction --prefer-dist --no-progress --no-suggest --optimize-autoloader --classmap-authoritative
         shell: bash
@@ -56,7 +56,7 @@ jobs:
       - name: Inject npm token (optional)
         run: |
           echo "@helsingborg-stad:registry=https://npm.pkg.github.com/helsingborg-stad" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_GITHUB_TOKEN }}" >> ~/.npmrc
         shell: bash
 
       - name: Download ACF plugin
