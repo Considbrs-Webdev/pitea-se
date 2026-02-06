@@ -52,6 +52,9 @@ jobs:
       - name: Inject npm token (optional)
         run: |
           echo "@helsingborg-stad:registry=https://npm.pkg.github.com/helsingborg-stad" >> ~/.npmrc
+          echo "@awesome.me:registry=https://npm.fontawesome.com/" >> ~/.npmrc
+          echo "@fortawesome:registry=https://npm.fontawesome.com/" >> ~/.npmrc
+          echo "//npm.fontawesome.com/:_authToken=${{ secrets.FONTAWESOME_TOKEN }}" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
         shell: bash
 
