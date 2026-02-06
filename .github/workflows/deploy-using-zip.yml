@@ -41,6 +41,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
+      - name: Combine composer.json and composer.local.json
+        run: php ./composer-local-merge.php pre-install
+        shell: bash
+        
       - name: Install composer dependencies
         run: composer install --no-interaction --prefer-dist --no-progress --no-suggest --optimize-autoloader --classmap-authoritative
         shell: bash
@@ -72,59 +76,15 @@ jobs:
 
       - name: Create release tarball (include-list aware)
         run: |
-          set -euo pipefail
-          TMPDIR=$(mktemp -d)
-          INCLUDE_FILE=release-include-list.txt
-          if [ -f "$INCLUDE_FILE" ]; then
-            echo "Using include list at repository root: $INCLUDE_FILE"
-            > /tmp/include.tmp
-            while IFS= read -r path; do
-              [ -z "$path" ] && continue
-              if [ -d "$path" ]; then
-                # include the directory itself (so empty dirs are preserved)
-                printf "%s/\n" "$path" >> /tmp/include.tmp
-                # include all files under the directory
-                find "$path" -type f -print >> /tmp/include.tmp
-              else
-                printf "%s\n" "$path" >> /tmp/include.tmp
-              fi
-            done < <(awk '!/^\s*#/ && NF {print}' "$INCLUDE_FILE")
-            rsync -a --delete --files-from=/tmp/include.tmp ./ "$TMPDIR/"
-            COUNT=$(wc -l < /tmp/include.tmp || true)
-            rm -f /tmp/include.tmp
-            echo "Included $COUNT paths."
-          else
-            echo "No include list found; snapshotting working tree with default excludes"
-            rsync -a --delete --exclude='.git' --exclude='.github' --exclude='node_modules' --exclude='build' ./ "$TMPDIR/"
-          fi
-          tar -C "$TMPDIR" -czf release.tar.gz .
-          rm -rf "$TMPDIR"
+          bash ./scripts/create-artifact.sh
         shell: bash
 
-      - name: Upload package via FTP
-        if: ${{ vars.FTP_PROTOCOL == 'ftp' }}
+      - name: Upload package via HTTPS endpoint
         run: |
-          set -euo pipefail
-          REMOTE_DIR="${{ vars.FTP_REMOTE_DIR }}"
-          if [ -z "${REMOTE_DIR}" ] || [ "${REMOTE_DIR}" = "null" ]; then
-            TARGET="release.tar.gz"
-          else
-            TARGET="$REMOTE_DIR/release.tar.gz"
-          fi
-          echo "Uploading release.tar.gz to ftp://${{ vars.FTP_HOST }}/$TARGET"
-          curl --fail --silent --show-error --ftp-create-dirs -T release.tar.gz "ftp://${{ vars.FTP_HOST }}/$TARGET" --user "${{ vars.FTP_USER }}:${{ secrets.FTP_PASSWORD }}"
+          bash ./scripts/upload-release.sh release.tar.gz "${{ vars.ARTIFACT_UPLOAD_ENDPOINT_STAGE }}" "${{ vars.DEPLOY_UPLOAD_USER_STAGE }}:${{ secrets.DEPLOY_UPLOAD_PASSWORD_STAGE }}"
         shell: bash
 
-      - name: Upload package via SFTP
-        if: ${{ vars.FTP_PROTOCOL == 'sftp' }}
+      - name: Trigger remote deployment
         run: |
-          set -euo pipefail
-          sudo apt-get update -y
-          sudo apt-get install -y sshpass
-          REMOTE_DIR="${{ vars.FTP_REMOTE_DIR }}"
-          if [ -z "${REMOTE_DIR}" ] || [ "${REMOTE_DIR}" = "null" ]; then
-            REMOTE_DIR='.'
-          fi
-          echo "Uploading release.tar.gz to sftp://${{ vars.FTP_HOST }} (remote dir: $REMOTE_DIR)"
-          sshpass -p "${{ secrets.FTP_PASSWORD }}" scp -o StrictHostKeyChecking=no release.tar.gz "${{ vars.FTP_USER }}@${{ vars.FTP_HOST }}:$REMOTE_DIR/"
+          curl -X POST -u "${{ vars.DEPLOY_UPLOAD_USER_STAGE }}:${{ secrets.DEPLOY_UPLOAD_PASSWORD_STAGE }}" "${{ vars.DEPLOY_TRIGGER_ENDPOINT_STAGE }}"
         shell: bash
