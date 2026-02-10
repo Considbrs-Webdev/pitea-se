@@ -46,6 +46,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/considbrs-webdev/modularity-toc"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/modularity-simpleview-events"
     }
   ],
   "require": {
@@ -60,6 +64,7 @@
     "considbrs-webdev/modularity-quick-links": "dev-dev",
     "considbrs-webdev/modularity-service-info": "dev-dev",
     "considbrs-webdev/modularity-step-by-step": "dev-dev",
-    "considbrs-webdev/modularity-toc": "dev-dev"
+    "considbrs-webdev/modularity-toc": "dev-dev",
+    "considbrs-webdev/modularity-simpleview-events": "dev-dev"
   }
 }
