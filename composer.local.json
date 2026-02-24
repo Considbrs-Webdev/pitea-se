@@ -50,6 +50,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/considbrs-webdev/modularity-simpleview-events"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/considbrs-webdev/typesense-search"
     }
   ],
   "require": {
@@ -65,6 +69,7 @@
     "considbrs-webdev/modularity-service-info": "dev-dev",
     "considbrs-webdev/modularity-step-by-step": "dev-dev",
     "considbrs-webdev/modularity-toc": "dev-dev",
-    "considbrs-webdev/modularity-simpleview-events": "dev-dev"
+    "considbrs-webdev/modularity-simpleview-events": "dev-dev",
+    "considbrs-webdev/typesense-search": "dev-dev"
   }
 }
