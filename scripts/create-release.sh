@@ -112,10 +112,6 @@ ln -sfn "$TARGET_DIR" "$SYMLINK_PATH"
 echo "Moving advanced-custom-fields-pro to mu-plugins inside release"
 mv "$TARGET_DIR/wp-content/plugins/advanced-custom-fields-pro" "$TARGET_DIR/wp-content/mu-plugins/advanced-custom-fields-pro"
 
-# Remove WPMU Security
-echo "Removing WPMU Security"
-rm -rf "$TARGET_DIR/wp-content/mu-plugins/wpmu-security"
-
 # Ensure correct permissions: release dir 755, all subdirectories 755, files 644
 echo "Setting permissions: directories=755, files=644 in $TARGET_DIR"
 chmod 755 "$TARGET_DIR"
@@ -126,6 +122,11 @@ find "$TARGET_DIR" -type f -exec chmod 644 {} +
 echo "Clearing /webb/municipio/tmp/blade-cache..."
 if [ -d "/webb/municipio/tmp/blade-cache" ]; then
     find "/webb/municipio/tmp/blade-cache" -mindepth 1 -exec rm -rf {} +
+fi
+
+# Clear LS Cache
+if [ -d "/data/lscache/pitea" ]; then
+    find "/data/lscache/pitea" -mindepth 1 -exec rm -rf {} +
 fi
 
 # Rename the original tarball to match the release folder name
