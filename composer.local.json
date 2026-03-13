@@ -54,6 +54,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/considbrs-webdev/typesense-search"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/Considbrs-Webdev/modularity-opening-hours/"
     }
   ],
   "require": {
@@ -71,5 +75,6 @@
     "considbrs-webdev/modularity-toc": "dev-dev",
     "considbrs-webdev/modularity-simpleview-events": "dev-dev",
     "considbrs-webdev/typesense-search": "dev-dev"
+    "considbrs-webdev/modularity-opening-hours": "dev-dev"
   }
 }
