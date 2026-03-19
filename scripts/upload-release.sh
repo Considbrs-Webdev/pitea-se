@@ -39,9 +39,9 @@ while [ $index -lt $TOTAL_CHUNKS ]; do
 
   # dd with bs=CHUNK_SIZE and skip=index extracts the exact chunk directly
   if [ "$DEBUG" != "0" ]; then
-    CURL_OPTS=( -v )
+    CURL_OPTS=( -v --fail-with-body )
   else
-    CURL_OPTS=( -sS )
+    CURL_OPTS=( -sS --fail-with-body )
   fi
 
   # Capture response and exit code
@@ -60,7 +60,8 @@ while [ $index -lt $TOTAL_CHUNKS ]; do
 
   echo "Server response for chunk $index: $resp"
   if [ $rc -ne 0 ]; then
-    echo "curl exited with code $rc" >&2
+    echo "curl exited with code $rc for chunk $index" >&2
+    exit $rc
   fi
   echo "Uploaded chunk $index"
   index=$((index + 1))

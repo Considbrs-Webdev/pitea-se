@@ -117,5 +117,5 @@ jobs:
 
       - name: Trigger remote deployment
         run: |
-          curl -X POST -u "${{ vars.DEPLOY_UPLOAD_USER_STAGE }}:${{ secrets.DEPLOY_UPLOAD_PASSWORD_STAGE }}" "${{ vars.DEPLOY_TRIGGER_ENDPOINT_STAGE }}"
+          curl -sS --fail-with-body -X POST -u "${{ vars.DEPLOY_UPLOAD_USER_STAGE }}:${{ secrets.DEPLOY_UPLOAD_PASSWORD_STAGE }}" "${{ vars.DEPLOY_TRIGGER_ENDPOINT_STAGE }}"
         shell: bash
