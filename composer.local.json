@@ -2,6 +2,12 @@
   "name": "municipio-se/municipio-deployment-custom",
   "license": "MIT",
   "description": "Additions for you own install of municipo.",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://my.yoast.com/packages/"
+    }
+  ],
   "require": {
     "considbrs-webdev/pitea-customisation": "dev-dev",
     "considbrs-webdev/modularity-arcgis-map": "dev-dev",
@@ -17,6 +23,7 @@
     "considbrs-webdev/modularity-simpleview-events": "dev-dev",
     "considbrs-webdev/typesense-search": "dev-dev",
     "considbrs-webdev/modularity-opening-hours": "dev-dev",
-    "considbrs-webdev/modularity-cta-icon-links": "dev-dev"
+    "considbrs-webdev/modularity-cta-icon-links": "dev-dev",
+    "yoast/wordpress-seo-premium": "*"
   }
 }

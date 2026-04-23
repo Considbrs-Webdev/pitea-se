@@ -1,4 +1,4 @@
-name: Deploy using ZIP file as intermediate
+name: Build artefact
 
 on:
   workflow_dispatch:
@@ -9,9 +9,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    outputs:
-      artifact_name: release-package
 
     steps:
       - name: Checkout repository
@@ -94,42 +91,13 @@ jobs:
         shell: bash
 
       - name: Create release tarball
-        run: |
-          bash ./scripts/create-artifact.sh
+        run: bash ./scripts/create-artifact.sh
         shell: bash
 
-      - name: Upload workflow artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload build artefact
+        uses: actions/upload-artifact@v7
         with:
           name: release-package
           path: release.tar.gz
           if-no-files-found: error
           retention-days: 7
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download workflow artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: release-package
-          path: .
-
-      - name: Verify artifact exists
-        run: ls -lah release.tar.gz
-        shell: bash
-
-      - name: Upload package via HTTPS endpoint
-        run: |
-          bash ./scripts/upload-release.sh release.tar.gz "${{ vars.ARTIFACT_UPLOAD_ENDPOINT_STAGE }}" "${{ vars.DEPLOY_UPLOAD_USER_STAGE }}:${{ secrets.DEPLOY_UPLOAD_PASSWORD_STAGE }}"
-        shell: bash
-
-      - name: Trigger remote deployment
-        run: |
-          curl -sS --fail-with-body -X POST -u "${{ vars.DEPLOY_UPLOAD_USER_STAGE }}:${{ secrets.DEPLOY_UPLOAD_PASSWORD_STAGE }}" "${{ vars.DEPLOY_TRIGGER_ENDPOINT_STAGE }}"
-        shell: bash
