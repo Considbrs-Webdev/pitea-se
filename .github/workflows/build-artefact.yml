@@ -9,6 +9,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      YOAST_COMPOSER_TOKEN: ${{ secrets.YOAST_COMPOSER_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -45,7 +47,7 @@ jobs:
         shell: bash
 
       - name: Validate Yoast Premium auth
-        if: ${{ secrets.YOAST_COMPOSER_TOKEN == '' }}
+        if: env.YOAST_COMPOSER_TOKEN == ''
         run: |
           if grep -q '"yoast/wordpress-seo-premium"' composer.local.json; then
             echo "::error::YOAST_COMPOSER_TOKEN secret is required when yoast/wordpress-seo-premium is enabled in composer.local.json."
@@ -54,8 +56,8 @@ jobs:
         shell: bash
 
       - name: Configure Composer auth for Yoast Premium
-        if: ${{ secrets.YOAST_COMPOSER_TOKEN != '' }}
-        run: composer config --global --auth http-basic.my.yoast.com token "${{ secrets.YOAST_COMPOSER_TOKEN }}"
+        if: env.YOAST_COMPOSER_TOKEN != ''
+        run: composer config --global --auth http-basic.my.yoast.com token "$YOAST_COMPOSER_TOKEN"
         shell: bash
 
       - name: Install composer dependencies
