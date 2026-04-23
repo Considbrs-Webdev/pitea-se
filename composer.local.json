@@ -4,56 +4,11 @@
   "description": "Additions for you own install of municipo.",
   "repositories": [
     {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/modularity-service-info"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/pitea-customisation"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/modularity-noticeboard"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/modularity-municipal-calendar"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/modularity-quick-links"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/modularity-step-by-step"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/modularity-latest-events"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/modularity-link-cards"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/modularity-pitea-hero"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/Considbrs-Webdev/modularity-arcgis-map"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/modularity-toc"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/considbrs-webdev/modularity-simpleview-events"
+      "type": "composer",
+      "url": "https://my.yoast.com/packages/"
     }
   ],
   "require": {
-    "wpackagist-plugin/acf-extended": "0.9.2.3",
     "considbrs-webdev/pitea-customisation": "dev-dev",
     "considbrs-webdev/modularity-arcgis-map": "dev-dev",
     "considbrs-webdev/modularity-latest-events": "dev-dev",
@@ -65,6 +20,10 @@
     "considbrs-webdev/modularity-service-info": "dev-dev",
     "considbrs-webdev/modularity-step-by-step": "dev-dev",
     "considbrs-webdev/modularity-toc": "dev-dev",
-    "considbrs-webdev/modularity-simpleview-events": "dev-dev"
+    "considbrs-webdev/modularity-simpleview-events": "dev-dev",
+    "considbrs-webdev/typesense-search": "dev-dev",
+    "considbrs-webdev/modularity-opening-hours": "dev-dev",
+    "considbrs-webdev/modularity-cta-icon-links": "dev-dev",
+    "yoast/wordpress-seo-premium": "*"
   }
 }
