@@ -16,6 +16,7 @@
     "considbrs-webdev/modularity-toc": "dev-dev",
     "considbrs-webdev/modularity-simpleview-events": "dev-dev",
     "considbrs-webdev/typesense-search": "dev-dev",
-    "considbrs-webdev/modularity-opening-hours": "dev-dev"
+    "considbrs-webdev/modularity-opening-hours": "dev-dev",
+    "considbrs-webdev/modularity-cta-icon-links": "dev-dev"
   }
 }
