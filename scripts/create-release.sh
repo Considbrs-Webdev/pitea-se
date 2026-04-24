@@ -20,6 +20,7 @@ esac
 
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 RELEASES_DIR="$ROOT_DIR/$RELEASES_DIR_NAME"
+PRIVATE_PLUGINS_DIR="$ROOT_DIR/plugins"
 
 if [ ! -f "$TAR_PATH" ]; then
     echo "Error: tar file not found: $TAR_PATH" >&2
@@ -69,6 +70,7 @@ else
 fi
 
 TARGET_DIR="$RELEASES_DIR/release-${DATE}-${SHORT_HASH}"
+PRIVATE_PLUGIN_DEST_ROOT="$TARGET_DIR/wp-content/plugins"
 
 mkdir -p "$RELEASES_DIR"
 
@@ -82,6 +84,61 @@ mkdir -p "$TARGET_DIR"
 echo "Extracting $TAR_PATH -> $TARGET_DIR"
 tar -xzf "$TAR_PATH" -C "$TARGET_DIR"
 
+# Extract private plugin ZIPs into normalized plugin folders inside the release.
+if [ -d "$PRIVATE_PLUGINS_DIR" ]; then
+    if ! command -v unzip >/dev/null 2>&1; then
+        echo "Error: unzip is required to extract plugin ZIPs from $PRIVATE_PLUGINS_DIR" >&2
+        exit 1
+    fi
+
+    shopt -s nullglob
+    plugin_archives=("$PRIVATE_PLUGINS_DIR"/*.zip)
+    shopt -u nullglob
+
+    if [ ${#plugin_archives[@]} -eq 0 ]; then
+        echo "No private plugin ZIPs found, skipping: $PRIVATE_PLUGINS_DIR"
+    else
+        mkdir -p "$PRIVATE_PLUGIN_DEST_ROOT"
+
+        for plugin_zip in "${plugin_archives[@]}"; do
+            plugin_name=$(basename "$plugin_zip" .zip)
+            plugin_dest="$PRIVATE_PLUGIN_DEST_ROOT/$plugin_name"
+            extract_tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/private-plugin.XXXXXX")
+
+            echo "Extracting private plugin ZIP: $(basename "$plugin_zip") -> $plugin_dest"
+            unzip -q "$plugin_zip" -d "$extract_tmp_dir"
+
+            rm -rf "$extract_tmp_dir/__MACOSX"
+            rm -rf "$plugin_dest"
+
+            if [ -d "$extract_tmp_dir/$plugin_name" ]; then
+                mv "$extract_tmp_dir/$plugin_name" "$plugin_dest"
+            else
+                shopt -s dotglob nullglob
+                extracted_entries=("$extract_tmp_dir"/*)
+                shopt -u dotglob nullglob
+
+                if [ ${#extracted_entries[@]} -eq 1 ] && [ -d "${extracted_entries[0]}" ]; then
+                    mv "${extracted_entries[0]}" "$plugin_dest"
+                else
+                    mkdir -p "$plugin_dest"
+                    shopt -s dotglob nullglob
+                    extracted_entries=("$extract_tmp_dir"/*)
+                    shopt -u dotglob nullglob
+
+                    if [ ${#extracted_entries[@]} -gt 0 ]; then
+                        mv "${extracted_entries[@]}" "$plugin_dest"/
+                    fi
+                fi
+            fi
+
+            rm -rf "$extract_tmp_dir"
+        done
+    fi
+else
+    echo "Private plugins directory not found, skipping: $PRIVATE_PLUGINS_DIR"
+fi
+
 # Adding config symlink
 echo "Adding config symlink inside release"
 ln -sfn /webb/municipio/config "$TARGET_DIR/config"
@@ -94,8 +151,12 @@ ln -sfn /webb/municipio/config/.htaccess "$TARGET_DIR/.htaccess"
 echo "Adding uploads symlink inside release"
 ln -sfn /webb/municipio/uploads "$TARGET_DIR/wp-content/uploads"
 
+# Adding languages symlink
+echo "Adding language symlink inside release"
+ln -sfn /webb/municipio/languages "$TARGET_DIR/wp-content/languages"
+
 # Adding CICD symlink
-echo "Adding uploads symlink inside release"
+echo "Adding CICD symlink inside release"
 ln -sfn /webb/municipio/cicd "$TARGET_DIR/cicd"
 
 # Update symlink `current-release` at repository root to point to new release
@@ -108,6 +169,10 @@ ln -sfn "$TARGET_DIR" "$SYMLINK_PATH"
 echo "Moving advanced-custom-fields-pro to mu-plugins inside release"
 mv "$TARGET_DIR/wp-content/plugins/advanced-custom-fields-pro" "$TARGET_DIR/wp-content/mu-plugins/advanced-custom-fields-pro"
 
+# Copy InlayList.php into theme module inside release (overwrite)
+echo "Copying InlayList.php into release theme module"
+cp /webb/municipio/InlayList.php "$TARGET_DIR/wp-content/themes/municipio/Modularity/source/php/Module/InlayList/InlayList.php"
+
 # Ensure correct permissions: release dir 755, all subdirectories 755, files 644
 echo "Setting permissions: directories=755, files=644 in $TARGET_DIR"
 chmod 755 "$TARGET_DIR"
@@ -118,6 +183,11 @@ find "$TARGET_DIR" -type f -exec chmod 644 {} +
 echo "Clearing /webb/municipio/tmp/blade-cache..."
 if [ -d "/webb/municipio/tmp/blade-cache" ]; then
     find "/webb/municipio/tmp/blade-cache" -mindepth 1 -exec rm -rf {} +
+fi
+
+# Clear LS Cache
+if [ -d "/data/lscache/pitea" ]; then
+    find "/data/lscache/pitea" -mindepth 1 -exec rm -rf {} +
 fi
 
 # Rename the original tarball to match the release folder name
