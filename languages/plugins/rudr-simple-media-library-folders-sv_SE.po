@@ -1,0 +1,373 @@
+# Copyright (C) 2026 Misha Rudrastyh
+# This file is distributed under the same license as the Simple Media Library Folders plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Simple Media Library Folders 3.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/rudr-simple-media-"
+"library-folders\n"
+"POT-Creation-Date: 2026-04-29T21:05:07+00:00\n"
+"PO-Revision-Date: 2026-04-29 23:07+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: sv_SE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.9\n"
+"X-Domain: rudr-simple-media-library-folders\n"
+
+#. Plugin Name of the plugin
+#: rudr-simple-media-library-folders.php
+msgid "Simple Media Library Folders"
+msgstr "Simple Media Library Folders"
+
+#. Plugin URI of the plugin
+#: rudr-simple-media-library-folders.php
+msgid "https://rudrastyh.com/plugins/wordpress-media-library-folders"
+msgstr "https://rudrastyh.com/plugins/wordpress-media-library-folders"
+
+#. Description of the plugin
+#: rudr-simple-media-library-folders.php
+msgid ""
+"The plugin allows you to organize the WordPress media library in folders"
+msgstr "Pluginet låter dig organisera WordPress mediebibliotek i mappar"
+
+#. Author of the plugin
+#: rudr-simple-media-library-folders.php
+msgid "Misha Rudrastyh"
+msgstr "Misha Rudrastyh"
+
+#. Author URI of the plugin
+#: rudr-simple-media-library-folders.php
+msgid "https://rudrastyh.com"
+msgstr "https://rudrastyh.com"
+
+#: classes/class-rudr-simple-upgrade.php:245
+msgid ""
+"It seems like your license key is expired or incorrect, please <a "
+"href=\"%1$s\" target=\"_blank\">renew your license</a> in order to get the "
+"latest plugin updates."
+msgstr ""
+"Det verkar som att din licensnyckel har gått ut eller är felaktig. <a "
+"href=\"%1$s\" target=\"_blank\">Förnya din licens</a> för att få de senaste "
+"pluginuppdateringarna."
+
+#: classes/class-rudr-simple-upgrade.php:254
+msgid ""
+"Please set a license key in plugin settings in order to receive updates."
+msgstr "Ange en licensnyckel i pluginets inställningar för att få uppdateringar."
+
+#: classes/class-rudr-simple-upgrade.php:335
+msgid ""
+"Your personal license for <a href=\"%s\">%s</a> has expired. Please, <a "
+"href=\"%s\">renew</a> or <a href=\"%s\">upgrade to lifetime</a> and forget "
+"about this message."
+msgstr ""
+"Din personliga licens för <a href=\"%s\">%s</a> har gått ut. <a href=\"%s\">"
+"Förnya</a> eller <a href=\"%s\">uppgradera till livstid</a> så slipper du "
+"detta meddelande."
+
+#: classes/class-rudr-simple-upgrade.php:365
+msgid ""
+"Please, set your license for <a href=\"%s\">%s</a> in the plugin settings, "
+"<a href=\"%s\">here</a>."
+msgstr ""
+"Ange din licens för <a href=\"%s\">%s</a> i pluginets inställningar <a "
+"href=\"%s\">här</a>."
+
+#: classes/class-rudr-simple-upgrade.php:380
+msgid ""
+"It seems like you are not using a valid license for <a href=\"%s\">%s</a>. "
+"Make sure it is set correctly <a href=\"%s\">in the plugin settings</a>."
+msgstr ""
+"Det verkar som att du inte använder en giltig licens för <a href=\"%s\">%s</"
+"a>. Kontrollera att den är korrekt angiven <a href=\"%s\">i pluginets "
+"inställningar</a>."
+
+#: rudr-simple-media-library-folders.php:444
+#: rudr-simple-media-library-folders.php:947
+msgid "All folders"
+msgstr "Alla mappar"
+
+#: rudr-simple-media-library-folders.php:445
+msgid "Move 1 item"
+msgstr "Flytta 1 objekt"
+
+#: rudr-simple-media-library-folders.php:446
+msgid "Move %d items"
+msgstr "Flytta %d objekt"
+
+#: rudr-simple-media-library-folders.php:447
+msgid "Add folder"
+msgstr "Lägg till mapp"
+
+#: rudr-simple-media-library-folders.php:448
+#: rudr-simple-media-library-folders.php:1187
+msgid "Create folder"
+msgstr "Skapa mapp"
+
+#: rudr-simple-media-library-folders.php:449
+#: rudr-simple-media-library-folders.php:740
+msgid "Edit Folder"
+msgstr "Redigera mapp"
+
+#: rudr-simple-media-library-folders.php:450
+msgid ""
+"You are about to permanently delete this folder from your site.\n"
+"This action cannot be undone.\n"
+"'Cancel' to stop, 'OK' to delete."
+msgstr ""
+"Du håller på att permanent ta bort den här mappen från webbplatsen.\n"
+"Den här åtgärden kan inte ångras.\n"
+"'Avbryt' för att stoppa, 'OK' för att ta bort."
+
+#: rudr-simple-media-library-folders.php:473
+#: rudr-simple-media-library-folders.php:493
+msgid "Media Library Folders Settings"
+msgstr "Inställningar för mappar i mediebiblioteket"
+
+#: rudr-simple-media-library-folders.php:474
+msgid "Media Library Folders"
+msgstr "Mappar i mediebiblioteket"
+
+#: rudr-simple-media-library-folders.php:499
+msgid "License"
+msgstr "Licens"
+
+#: rudr-simple-media-library-folders.php:523
+msgid "License Key"
+msgstr "Licensnyckel"
+
+#: rudr-simple-media-library-folders.php:526
+msgid ""
+"License key is required to receive the latest plugin updates. Please note, "
+"that your license key is the billing email you purchased the plugin with."
+msgstr ""
+"Licensnyckel krävs för att få de senaste pluginuppdateringarna. Observera att "
+"din licensnyckel är den e-postadress för fakturering som du använde när du "
+"köpte pluginet."
+
+#: rudr-simple-media-library-folders.php:532
+msgid ""
+"It seems that before you used the following media library folder plugins. "
+"You can import their data or completely remove it from the database."
+msgstr ""
+"Det verkar som att du tidigare har använt följande pluginer för mappar i "
+"mediebiblioteket. Du kan importera deras data eller ta bort den helt från "
+"databasen."
+
+#: rudr-simple-media-library-folders.php:551
+msgid "Run import"
+msgstr "Kör import"
+
+#: rudr-simple-media-library-folders.php:552
+msgid "Delete plugin data"
+msgstr "Ta bort pluginets data"
+
+#: rudr-simple-media-library-folders.php:556
+msgid "1 folder"
+msgid_plural "%s folders"
+msgstr[0] "1 mapp"
+msgstr[1] "%s mappar"
+
+#: rudr-simple-media-library-folders.php:556
+msgid "with 1 associated media file found to import"
+msgid_plural "with %s associated media files found to import"
+msgstr[0] "där 1 tillhörande mediefil hittades för import"
+msgstr[1] "där %s tillhörande mediefiler hittades för import"
+
+#: rudr-simple-media-library-folders.php:568
+#: rudr-simple-media-library-folders.php:1178
+msgid "Allowed Roles"
+msgstr "Tillåtna roller"
+
+#: rudr-simple-media-library-folders.php:582
+msgid "Manage what user roles are allowed to manage media library folders."
+msgstr "Hantera vilka användarroller som får hantera mappar i mediebiblioteket."
+
+#: rudr-simple-media-library-folders.php:587
+msgid "Show Count"
+msgstr "Visa antal"
+
+#: rudr-simple-media-library-folders.php:590
+msgid ""
+"This option allows you to show the total number of files in every folder."
+msgstr "Det här alternativet låter dig visa det totala antalet filer i varje mapp."
+
+#: rudr-simple-media-library-folders.php:594
+msgid "Show In List View"
+msgstr "Visa i listvy"
+
+#: rudr-simple-media-library-folders.php:597
+msgid ""
+"By default, the folders are only displayed in the grid view to keep the "
+"Media Library page nice and clean."
+msgstr ""
+"Som standard visas mapparna bara i rutnätsvyn för att hålla sidan "
+"Mediebiblioteket ren och överskådlig."
+
+#: rudr-simple-media-library-folders.php:601
+msgid "Show In Media Modals"
+msgstr "Visa i mediedialoger"
+
+#: rudr-simple-media-library-folders.php:604
+msgid ""
+"By default, only a simple filter by folder is available, but with this "
+"option you can display the entire folder sidebar."
+msgstr ""
+"Som standard finns bara ett enkelt filter efter mapp, men med det här "
+"alternativet kan du visa hela sidopanelen för mappar."
+
+#: rudr-simple-media-library-folders.php:608
+msgid "Delete Media Files with a Folder"
+msgstr "Ta bort mediefiler tillsammans med en mapp"
+
+#: rudr-simple-media-library-folders.php:611
+msgid ""
+"With this option selected, when you delete a folder, all the media files in "
+"this folder will be deleted as well."
+msgstr ""
+"Om detta alternativ är valt tas alla mediefiler i mappen också bort när du "
+"tar bort mappen."
+
+#: rudr-simple-media-library-folders.php:615
+msgid "Default Folder"
+msgstr "Standardmapp"
+
+#: rudr-simple-media-library-folders.php:622
+#: rudr-simple-media-library-folders.php:1208
+#: rudr-simple-media-library-folders.php:1216
+msgid "All files"
+msgstr "Alla filer"
+
+#: rudr-simple-media-library-folders.php:634
+msgid "Previously selected folder"
+msgstr "Tidigare vald mapp"
+
+#: rudr-simple-media-library-folders.php:635
+msgid "Select a folder which will be opened by default."
+msgstr "Välj en mapp som ska öppnas som standard."
+
+#: rudr-simple-media-library-folders.php:734
+msgctxt "taxonomy general name"
+msgid "Folders"
+msgstr "Mappar"
+
+#: rudr-simple-media-library-folders.php:735
+msgctxt "taxonomy singular name"
+msgid "Folder"
+msgstr "Mapp"
+
+#: rudr-simple-media-library-folders.php:736
+msgid "Search Folders"
+msgstr "Sök mappar"
+
+#: rudr-simple-media-library-folders.php:737
+msgid "All Folders"
+msgstr "Alla mappar"
+
+#: rudr-simple-media-library-folders.php:738
+#: rudr-simple-media-library-folders.php:1148
+msgid "Parent Folder"
+msgstr "Överordnad mapp"
+
+#: rudr-simple-media-library-folders.php:739
+msgid "Parent Folder:"
+msgstr "Överordnad mapp:"
+
+#: rudr-simple-media-library-folders.php:741
+msgid "Update Folder"
+msgstr "Uppdatera mapp"
+
+#: rudr-simple-media-library-folders.php:742
+msgid "Add New Folder"
+msgstr "Lägg till ny mapp"
+
+#: rudr-simple-media-library-folders.php:743
+msgid "New Folder Name"
+msgstr "Namn på ny mapp"
+
+#: rudr-simple-media-library-folders.php:744
+#: rudr-simple-media-library-folders.php:1111
+msgid "Folders"
+msgstr "Mappar"
+
+#: rudr-simple-media-library-folders.php:814
+#: rudr-simple-media-library-folders.php:863
+msgid "Choose folder"
+msgstr "Välj mapp"
+
+#: rudr-simple-media-library-folders.php:838
+msgid "Folder"
+msgstr "Mapp"
+
+#: rudr-simple-media-library-folders.php:1113
+#: rudr-simple-media-library-folders.php:1136
+msgid "Add Folder"
+msgstr "Lägg till mapp"
+
+#: rudr-simple-media-library-folders.php:1117
+msgid "Edit folder"
+msgstr "Redigera mapp"
+
+#: rudr-simple-media-library-folders.php:1118
+msgid "Delete folder"
+msgstr "Ta bort mapp"
+
+#: rudr-simple-media-library-folders.php:1122
+msgid "Sort by"
+msgstr "Sortera efter"
+
+#: rudr-simple-media-library-folders.php:1124
+msgid "Media count"
+msgstr "Antal mediefiler"
+
+#: rudr-simple-media-library-folders.php:1165
+msgid "Restrict Access"
+msgstr "Begränsa åtkomst"
+
+#: rudr-simple-media-library-folders.php:1168
+msgid "No restrictions"
+msgstr "Inga begränsningar"
+
+#: rudr-simple-media-library-folders.php:1169
+msgid "By user roles"
+msgstr "Efter användarroller"
+
+#: rudr-simple-media-library-folders.php:1170
+msgid "By usernames"
+msgstr "Efter användarnamn"
+
+#: rudr-simple-media-library-folders.php:1173
+msgid "Allowed Usernames"
+msgstr "Tillåtna användarnamn"
+
+#: rudr-simple-media-library-folders.php:1176
+msgid "You can provide multiple usernames; place each one on a separate line."
+msgstr "Du kan ange flera användarnamn; skriv varje namn på en separat rad."
+
+#: rudr-simple-media-library-folders.php:1181
+msgid "You can provide multiple roles; place each one on a separate line."
+msgstr "Du kan ange flera roller; skriv varje roll på en separat rad."
+
+#: rudr-simple-media-library-folders.php:1209
+#: rudr-simple-media-library-folders.php:1225
+msgid "Uncategorized"
+msgstr "Okategoriserad"
+
+#: rudr-simple-media-library-folders.php:2127
+msgid "The database data left from %s was removed successfully."
+msgstr "Databasdata som lämnats kvar från %s togs bort."
+
+#: rudr-simple-media-library-folders.php:2140
+msgid "1 folder imported"
+msgid_plural "%s folders imported"
+msgstr[0] "1 mapp importerades"
+msgstr[1] "%s mappar importerades"
+
+#: rudr-simple-media-library-folders.php:2142
+msgid "and 1 media file categorized."
+msgid_plural "and %s media files categorized."
+msgstr[0] "och 1 mediefil kategoriserades."
+msgstr[1] "och %s mediefiler kategoriserades."
