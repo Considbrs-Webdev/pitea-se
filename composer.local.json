@@ -24,6 +24,7 @@
     "considbrs-webdev/typesense-search": "dev-dev",
     "considbrs-webdev/modularity-opening-hours": "dev-dev",
     "considbrs-webdev/modularity-cta-icon-links": "dev-dev",
+    "considbrs-webdev/modularity-a-o": "dev-dev",
     "yoast/wordpress-seo-premium": "*"
   }
 }
