@@ -180,6 +180,7 @@ jobs:
         run: |
           ssh "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}" bash << 'ENDSSH'
           set -euo pipefail
+          cd "${{ vars.DEPLOY_WEB_ROOT }}"
           sudo chown www-data:www-data \
             "${{ vars.DEPLOY_WEB_ROOT }}/releases/release.tar.gz" \
             "${{ vars.DEPLOY_WEB_ROOT }}/releases/create-release.sh"
