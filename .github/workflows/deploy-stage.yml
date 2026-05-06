@@ -1,0 +1,193 @@
+name: Deploy - Stage
+
+on:
+  workflow_dispatch:
+
+env:
+  PHP_VERSION: ${{ vars.PHP_VERSION }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      YOAST_COMPOSER_TOKEN: ${{ secrets.YOAST_COMPOSER_TOKEN }}
+
+    outputs:
+      artifact_name: release-package
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.11.1
+
+      - name: Setup PHP with composer v2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          tools: composer:v2
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Cache composer packages
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Combine composer.json and composer.local.json
+        run: php ./composer-local-merge.php pre-install
+        shell: bash
+
+      - name: Validate Yoast Premium auth
+        if: env.YOAST_COMPOSER_TOKEN == ''
+        run: |
+          if grep -q '"yoast/wordpress-seo-premium"' composer.local.json; then
+            echo "::error::YOAST_COMPOSER_TOKEN secret is required when yoast/wordpress-seo-premium is enabled in composer.local.json."
+            exit 1
+          fi
+        shell: bash
+
+      - name: Configure Composer auth for Yoast Premium
+        if: env.YOAST_COMPOSER_TOKEN != ''
+        run: composer config --global --auth http-basic.my.yoast.com token
+          "$YOAST_COMPOSER_TOKEN"
+        shell: bash
+
+      - name: Install composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+          --optimize-autoloader --classmap-authoritative
+        shell: bash
+
+      - name: Write composer versions info file
+        run: composer show > composer.versions.md
+        shell: bash
+
+      - name: Inject npm token (optional)
+        run: |
+          echo "@helsingborg-stad:registry=https://npm.pkg.github.com/helsingborg-stad" >> ~/.npmrc
+          echo "@awesome.me:registry=https://npm.fontawesome.com/" >> ~/.npmrc
+          echo "@fortawesome:registry=https://npm.fontawesome.com/" >> ~/.npmrc
+          echo "//npm.fontawesome.com/:_authToken=${{ secrets.FONTAWESOME_TOKEN }}" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+        shell: bash
+
+      - name: Download ACF plugin
+        run: |
+          wget "${{ secrets.ACF_URL }}" -O acf.zip
+          unzip -q acf.zip -d wp-content/plugins/
+          rm -f acf.zip
+        shell: bash
+
+      - name: Execute build scripts
+        run: php ./build.php --cleanup --no-composer-in-child-packages --install-npm
+        shell: bash
+
+      - name: Cleanup .npmrc
+        run: rm -f ~/.npmrc
+        shell: bash
+
+      - name: Create release tarball
+        run: |
+          bash ./scripts/create-artifact.sh
+        shell: bash
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-package
+          path: release.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: stage
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download workflow artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: release-package
+          path: .
+
+      - name: Verify artifact exists
+        run: ls -lah release.tar.gz
+        shell: bash
+
+      - name: Install cloudflared
+        run: |
+          curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 \
+            -o /usr/local/bin/cloudflared
+          chmod +x /usr/local/bin/cloudflared
+
+      - name: Configure SSH
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "${DEPLOY_SSH_PRIVATE_KEY}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${DEPLOY_KNOWN_HOSTS}" >> ~/.ssh/known_hosts
+          {
+            echo "Host ${{ vars.DEPLOY_HOST }}"
+            echo "  IdentityFile ~/.ssh/deploy_key"
+            echo "  IdentitiesOnly yes"
+            echo "  ProxyCommand cloudflared access ssh --hostname %h"
+          } >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
+        env:
+          DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+
+      - name: Ensure server directories exist
+        run: |
+          ssh "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}" \
+            "sudo -u www-data mkdir -p '${{ vars.DEPLOY_WEB_ROOT }}/releases' '${{ vars.DEPLOY_WEB_ROOT }}/scripts'"
+        env:
+          TUNNEL_SERVICE_TOKEN_ID: ${{ vars.CF_CLIENT_ACCESS_ID }}
+          TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+
+      - name: Upload release artifact
+        run: |
+          scp "release.tar.gz" \
+            "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}:${{ vars.DEPLOY_WEB_ROOT }}/releases/release.tar.gz"
+        env:
+          TUNNEL_SERVICE_TOKEN_ID: ${{ vars.CF_CLIENT_ACCESS_ID }}
+          TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+
+      - name: Upload release script
+        run: |
+          scp "scripts/create-release.sh" \
+            "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}:${{ vars.DEPLOY_WEB_ROOT }}/scripts/create-release.sh"
+        env:
+          TUNNEL_SERVICE_TOKEN_ID: ${{ vars.CF_CLIENT_ACCESS_ID }}
+          TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+
+      - name: Run release script on server
+        run: |
+          ssh "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}" bash << 'ENDSSH'
+          set -euo pipefail
+          sudo chown www-data:www-data \
+            "${{ vars.DEPLOY_WEB_ROOT }}/releases/release.tar.gz" \
+            "${{ vars.DEPLOY_WEB_ROOT }}/scripts/create-release.sh"
+          sudo chmod +x "${{ vars.DEPLOY_WEB_ROOT }}/scripts/create-release.sh"
+          exec sudo -u www-data "${{ vars.DEPLOY_WEB_ROOT }}/scripts/create-release.sh" \
+            "${{ vars.DEPLOY_WEB_ROOT }}/releases/release.tar.gz" \
+            releases
+          ENDSSH
+        env:
+          TUNNEL_SERVICE_TOKEN_ID: ${{ vars.CF_CLIENT_ACCESS_ID }}
+          TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
