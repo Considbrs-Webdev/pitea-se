@@ -155,10 +155,6 @@ ln -sfn /webb/municipio/uploads "$TARGET_DIR/wp-content/uploads"
 echo "Adding language symlink inside release"
 ln -sfn /webb/municipio/languages "$TARGET_DIR/wp-content/languages"
 
-# Adding CICD symlink
-echo "Adding CICD symlink inside release"
-ln -sfn /webb/municipio/cicd "$TARGET_DIR/cicd"
-
 # Update symlink `current-release` at repository root to point to new release
 SYMLINK_PATH="$ROOT_DIR/htdocs"
 
@@ -168,10 +164,6 @@ ln -sfn "$TARGET_DIR" "$SYMLINK_PATH"
 # Move ACF Pro plugin from plugins to mu-plugins inside the created release
 echo "Moving advanced-custom-fields-pro to mu-plugins inside release"
 mv "$TARGET_DIR/wp-content/plugins/advanced-custom-fields-pro" "$TARGET_DIR/wp-content/mu-plugins/advanced-custom-fields-pro"
-
-# Copy InlayList.php into theme module inside release (overwrite)
-echo "Copying InlayList.php into release theme module"
-cp /webb/municipio/InlayList.php "$TARGET_DIR/wp-content/themes/municipio/Modularity/source/php/Module/InlayList/InlayList.php"
 
 # Ensure correct permissions: release dir 755, all subdirectories 755, files 644
 echo "Setting permissions: directories=755, files=644 in $TARGET_DIR"
