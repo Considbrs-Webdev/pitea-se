@@ -168,6 +168,16 @@ jobs:
           TUNNEL_SERVICE_TOKEN_ID: ${{ vars.CF_CLIENT_ACCESS_ID }}
           TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
 
+      - name: Set permissions on release artifact
+        run: |
+          ssh "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}" bash << 'ENDSSH'
+          set -euo pipefail
+          chmod 660 "${{ vars.DEPLOY_WEB_ROOT }}/releases/release.tar.gz"
+          ENDSSH
+        env:
+          TUNNEL_SERVICE_TOKEN_ID: ${{ vars.CF_CLIENT_ACCESS_ID }}
+          TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+
       - name: Upload release script
         run: |
           scp "scripts/create-release.sh" \
@@ -181,10 +191,6 @@ jobs:
           ssh "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}" bash << 'ENDSSH'
           set -euo pipefail
           cd "${{ vars.DEPLOY_WEB_ROOT }}"
-          sudo chown www-data:www-data \
-            "${{ vars.DEPLOY_WEB_ROOT }}/releases/release.tar.gz" \
-            "${{ vars.DEPLOY_WEB_ROOT }}/releases/create-release.sh"
-          sudo chmod 770 "${{ vars.DEPLOY_WEB_ROOT }}/releases/create-release.sh"
           exec sudo -u www-data "${{ vars.DEPLOY_WEB_ROOT }}/releases/create-release.sh" \
             "${{ vars.DEPLOY_WEB_ROOT }}/releases/release.tar.gz" \
             releases
