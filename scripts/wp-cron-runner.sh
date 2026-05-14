@@ -189,6 +189,7 @@ if should_run_every_minutes 1440 "daily"; then
   run_cron_hook "wpseo-reindex"
   run_cron_hook "wpseo_permalink_structure_check"
   run_cron_hook "wpseo_detect_default_seo_data"
+  run_cron_hook "wpseo_start_cleanup_indexables"
 fi
 
 # -------------------------------------------------------------------
