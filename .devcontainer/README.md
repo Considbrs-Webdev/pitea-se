@@ -86,9 +86,27 @@ Before running the migration, configure the required environment variables in `.
 | `REMOTE_SSH` | SSH connection string (user@host) |
 | `REMOTE_PATH` | WordPress installation path on remote |
 | `REMOTE_SITE_PROTOCOL` | Protocol of remote site (`http://` or `https://`) |
-| `REMOTE_SITE_DOMAIN` | Domain of remote site to migrate |
+| `REMOTE_SITE_DOMAIN` | Domain(s) of remote site(s) to migrate; supports single value, comma-separated list, or bash array |
 | `REMOTE_PREFIX` | Database table prefix on remote |
-| `LOCAL_SITE_SLUG` | Slug for the local subfolder site |
+| `LOCAL_SITE_SLUG` | Local slug(s); supports single value, comma-separated list, or bash array |
+
+If list/array values are used, `REMOTE_SITE_DOMAIN` and `LOCAL_SITE_SLUG` must have the same number of items.
+
+Examples:
+
+```bash
+# Single site (backward compatible)
+REMOTE_SITE_DOMAIN=example.com
+LOCAL_SITE_SLUG=mysite
+
+# Multiple sites (comma-separated)
+REMOTE_SITE_DOMAIN=example.com,example-two.com
+LOCAL_SITE_SLUG=mysite,mysite-two
+
+# Multiple sites (bash array)
+REMOTE_SITE_DOMAIN=("example.com" "example-two.com")
+LOCAL_SITE_SLUG=("mysite" "mysite-two")
+```
 
 See `.env.example` for a template.
 
