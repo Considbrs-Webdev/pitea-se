@@ -1,4 +1,8 @@
 {
   "search.useIgnoreFiles": false,
   "intelephense.format.braces": "per",
+  "chat.tools.terminal.autoApprove": {
+    "wp": true,
+    "msgmerge": true
+  },
 }
