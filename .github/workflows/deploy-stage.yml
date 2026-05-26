@@ -155,7 +155,7 @@ jobs:
       - name: Ensure server directories exist
         run: |
           ssh "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}" \
-            "sudo -u www-data mkdir -p '${{ vars.DEPLOY_WEB_ROOT }}/releases' '${{ vars.DEPLOY_WEB_ROOT }}/scripts'"
+            "sudo -u www-data mkdir -p '${{ vars.DEPLOY_WEB_ROOT }}/releases'"
         env:
           TUNNEL_SERVICE_TOKEN_ID: ${{ vars.CF_CLIENT_ACCESS_ID }}
           TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
@@ -171,7 +171,7 @@ jobs:
       - name: Upload release script
         run: |
           scp "scripts/create-release.sh" \
-            "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}:${{ vars.DEPLOY_WEB_ROOT }}/scripts/create-release.sh"
+            "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}:${{ vars.DEPLOY_WEB_ROOT }}/releases/create-release.sh"
         env:
           TUNNEL_SERVICE_TOKEN_ID: ${{ vars.CF_CLIENT_ACCESS_ID }}
           TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
@@ -180,11 +180,12 @@ jobs:
         run: |
           ssh "${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_HOST }}" bash << 'ENDSSH'
           set -euo pipefail
+          cd "${{ vars.DEPLOY_WEB_ROOT }}"
           sudo chown www-data:www-data \
             "${{ vars.DEPLOY_WEB_ROOT }}/releases/release.tar.gz" \
-            "${{ vars.DEPLOY_WEB_ROOT }}/scripts/create-release.sh"
-          sudo chmod +x "${{ vars.DEPLOY_WEB_ROOT }}/scripts/create-release.sh"
-          exec sudo -u www-data "${{ vars.DEPLOY_WEB_ROOT }}/scripts/create-release.sh" \
+            "${{ vars.DEPLOY_WEB_ROOT }}/releases/create-release.sh"
+          sudo chmod 770 "${{ vars.DEPLOY_WEB_ROOT }}/releases/create-release.sh"
+          exec sudo -u www-data "${{ vars.DEPLOY_WEB_ROOT }}/releases/create-release.sh" \
             "${{ vars.DEPLOY_WEB_ROOT }}/releases/release.tar.gz" \
             releases
           ENDSSH

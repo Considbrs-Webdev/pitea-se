@@ -30,12 +30,11 @@ This guide provides instructions for setting up and working with the Municipio D
     `.devcontainer/scripts/setup.sh`
 
 6. **Access the local site**
-    Open your browser and navigate to [https://localhost:8443](https://localhost:8443).
+    Open your browser and navigate to [http://localhost:8080](http://localhost:8080).
 
 ### Accessing the Local Site
 
-- Navigate to [https://localhost:8443](https://localhost:8443) in your browser.
-- Accept the self-signed certificate warning if prompted.
+- Navigate to [http://localhost:8080](http://localhost:8080) in your browser.
 - Default login credentials:
   - **Username:** `superadmin`
   - **Password:** `superadmin`
@@ -87,9 +86,27 @@ Before running the migration, configure the required environment variables in `.
 | `REMOTE_SSH` | SSH connection string (user@host) |
 | `REMOTE_PATH` | WordPress installation path on remote |
 | `REMOTE_SITE_PROTOCOL` | Protocol of remote site (`http://` or `https://`) |
-| `REMOTE_SITE_DOMAIN` | Domain of remote site to migrate |
+| `REMOTE_SITE_DOMAIN` | Domain(s) of remote site(s) to migrate; supports single value, comma-separated list, or bash array |
 | `REMOTE_PREFIX` | Database table prefix on remote |
-| `LOCAL_SITE_SLUG` | Slug for the local subfolder site |
+| `LOCAL_SITE_SLUG` | Local slug(s); supports single value, comma-separated list, or bash array |
+
+If list/array values are used, `REMOTE_SITE_DOMAIN` and `LOCAL_SITE_SLUG` must have the same number of items.
+
+Examples:
+
+```bash
+# Single site (backward compatible)
+REMOTE_SITE_DOMAIN=example.com
+LOCAL_SITE_SLUG=mysite
+
+# Multiple sites (comma-separated)
+REMOTE_SITE_DOMAIN=example.com,example-two.com
+LOCAL_SITE_SLUG=mysite,mysite-two
+
+# Multiple sites (bash array)
+REMOTE_SITE_DOMAIN=("example.com" "example-two.com")
+LOCAL_SITE_SLUG=("mysite" "mysite-two")
+```
 
 See `.env.example` for a template.
 
@@ -114,7 +131,7 @@ The script will:
 - You may be prompted for your SSH password/key passphrase
 - If the local site already exists, you'll be asked whether to delete it
 - The script requires SSH access to the remote server
-- After migration, access your site at `https://localhost:8443/<LOCAL_SITE_SLUG>`
+- After migration, access your site at `http://localhost:8080/<LOCAL_SITE_SLUG>`
 
 ## Documentation for setup-dev-package.sh Script
 The `setup-dev-package.sh` script is a utility designed to streamline the development process by providing a clean and efficient development environment. It automates the process of downloading an editable version of the selected plugin. All other plugins in the environment will be reset to their production release versions. This ensures that only the selected plugin is in a development state, avoiding unnecessary builds for untouched packages.
