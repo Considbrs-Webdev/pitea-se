@@ -13,12 +13,17 @@
     }
   ],
   "require": {
+    "considbrs-webdev/easy-quicklinks": "1.0.0",
     "considbrs-webdev/pitea-customisation": "dev-dev",
+    "considbrs-webdev/modularity-a-o": "dev-dev",
     "considbrs-webdev/modularity-arcgis-map": "dev-dev",
+    "considbrs-webdev/modularity-cta-icon-links": "dev-dev",
+    "considbrs-webdev/modularity-folder-browser": "dev-dev",
     "considbrs-webdev/modularity-latest-events": "dev-dev",
     "considbrs-webdev/modularity-link-cards": "dev-dev",
     "considbrs-webdev/modularity-municipal-calendar": "dev-dev",
     "considbrs-webdev/modularity-noticeboard": "dev-dev",
+    "considbrs-webdev/modularity-opening-hours": "dev-dev",
     "considbrs-webdev/modularity-pitea-hero": "dev-dev",
     "considbrs-webdev/modularity-quick-links": "dev-dev",
     "considbrs-webdev/modularity-service-info": "dev-dev",
@@ -26,10 +31,6 @@
     "considbrs-webdev/modularity-toc": "dev-dev",
     "considbrs-webdev/modularity-simpleview-events": "dev-dev",
     "considbrs-webdev/typesense-search": "dev-dev",
-    "considbrs-webdev/modularity-opening-hours": "dev-dev",
-    "considbrs-webdev/modularity-cta-icon-links": "dev-dev",
-    "considbrs-webdev/modularity-a-o": "dev-dev",
-    "michaelclaesson/easy-quicklinks": "1.0.0",
     "wpackagist-plugin/mediaflow": "^2.4.4",
     "yoast/wordpress-seo-premium": "*"
   }
