@@ -31,6 +31,7 @@
     "considbrs-webdev/modularity-toc": "dev-dev",
     "considbrs-webdev/modularity-simpleview-events": "dev-dev",
     "considbrs-webdev/typesense-search": "dev-dev",
+    "williamundqvist/scheduled-page-reviews": "v0.1.2",
     "wpackagist-plugin/mediaflow": "^2.4.4",
     "yoast/wordpress-seo-premium": "*"
   }
