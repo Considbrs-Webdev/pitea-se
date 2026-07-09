@@ -177,10 +177,11 @@ if [ -d "/webb/municipio/tmp/blade-cache" ]; then
     find "/webb/municipio/tmp/blade-cache" -mindepth 1 -exec rm -rf {} +
 fi
 
-# Clear LS Cache
-if [ -d "/data/lscache/pitea" ]; then
-    find "/data/lscache/pitea" -mindepth 1 -exec rm -rf {} +
-fi
+# Clear cache
+/bin/wp --path=/webb/municipio/htdocs/wp litespeed-purge all
+
+# Restart LiteSpeed
+sudo /bin/systemctl restart lsws
 
 # Rename the original tarball to match the release folder name
 NEW_TAR_NAME="release-${DATE}-${SHORT_HASH}.tar.gz"
