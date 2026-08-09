@@ -180,7 +180,17 @@ if [ -d "/webb/municipio/tmp/blade-cache" ]; then
     find "/webb/municipio/tmp/blade-cache" -mindepth 1 -exec rm -rf {} +
 fi
 
-# Clear LiteSpeed page cache
+# Clear LiteSpeed page cache on disk. The WP-CLI purge below only does a
+# tag-based/logical invalidation and leaves the cached files in place until
+# LiteSpeed's own garbage collector gets to them, so remove them directly -
+# www-data already owns /data/lscache/pitea, no sudo needed.
+echo "Clearing /data/lscache/pitea..."
+if [ -d "/data/lscache/pitea" ]; then
+    find "/data/lscache/pitea" -mindepth 1 -exec rm -rf {} +
+fi
+
+# Also send a LiteSpeed purge signal via WP-CLI, which covers other cache
+# layers (object cache, CDN) that the direct filesystem clear above doesn't.
 /bin/wp --path=/webb/municipio/htdocs/wp litespeed-purge all
 
 # Restart LiteSpeed (also clears PHP opcache held by the LSPHP workers)
