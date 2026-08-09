@@ -155,12 +155,6 @@ ln -sfn /webb/municipio/uploads "$TARGET_DIR/wp-content/uploads"
 echo "Adding language symlink inside release"
 ln -sfn /webb/municipio/languages "$TARGET_DIR/wp-content/languages"
 
-# Update symlink `current-release` at repository root to point to new release
-SYMLINK_PATH="$ROOT_DIR/htdocs"
-
-echo "Updating symlink: $SYMLINK_PATH -> $TARGET_DIR"
-ln -sfn "$TARGET_DIR" "$SYMLINK_PATH"
-
 # Move ACF Pro plugin from plugins to mu-plugins inside the created release
 echo "Moving advanced-custom-fields-pro to mu-plugins inside release"
 mv "$TARGET_DIR/wp-content/plugins/advanced-custom-fields-pro" "$TARGET_DIR/wp-content/mu-plugins/advanced-custom-fields-pro"
@@ -171,16 +165,25 @@ chmod 755 "$TARGET_DIR"
 find "$TARGET_DIR" -type d -exec chmod 755 {} +
 find "$TARGET_DIR" -type f -exec chmod 644 {} +
 
+# Update symlink `current-release` at repository root to point to new release.
+# Done last (after permissions + plugin move) so the site only ever goes live
+# once the release is fully prepared, and so the cache purge/restart below
+# happen against the release that is actually being served.
+SYMLINK_PATH="$ROOT_DIR/htdocs"
+
+echo "Updating symlink: $SYMLINK_PATH -> $TARGET_DIR"
+ln -sfn "$TARGET_DIR" "$SYMLINK_PATH"
+
 # Clear blade cache
 echo "Clearing /webb/municipio/tmp/blade-cache..."
 if [ -d "/webb/municipio/tmp/blade-cache" ]; then
     find "/webb/municipio/tmp/blade-cache" -mindepth 1 -exec rm -rf {} +
 fi
 
-# Clear cache
+# Clear LiteSpeed page cache
 /bin/wp --path=/webb/municipio/htdocs/wp litespeed-purge all
 
-# Restart LiteSpeed
+# Restart LiteSpeed (also clears PHP opcache held by the LSPHP workers)
 sudo /bin/systemctl restart lsws
 
 # Rename the original tarball to match the release folder name
