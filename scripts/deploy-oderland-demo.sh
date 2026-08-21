@@ -1,21 +1,32 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Extract a Municipio release tarball into an Oderland domain folder in place.
-# Preserves server-side config, uploads, Let's Encrypt, and an existing .htaccess.
+# Extract a Municipio release tarball into the Oderland demo docroot only.
+# Docroot is hardcoded. Extra CLI path arguments are ignored.
 #
-# Usage: deploy-oderland-demo.sh /path/to/release.tar.gz /path/to/docroot
+# Usage: deploy-oderland-demo.sh [/path/to/release.tar.gz]
 
-TAR_PATH=${1:-}
-DOCROOT=${2:-}
-
-if [ -z "$TAR_PATH" ] || [ -z "$DOCROOT" ]; then
-    echo "Usage: $0 /path/to/release.tar.gz /path/to/docroot" >&2
+if [ "$(id -u)" -eq 0 ]; then
+    echo "Error: refusing to deploy as root" >&2
     exit 1
 fi
 
+TAR_PATH="${1:-$HOME/.oderland-demo-deploy/release.tar.gz}"
+DOCROOT="$HOME/domains/pitea-new.considbrs.se"
+ALLOWED_SUFFIX="/domains/pitea-new.considbrs.se"
+
 if [ ! -f "$TAR_PATH" ]; then
     echo "Error: tar file not found: $TAR_PATH" >&2
+    exit 1
+fi
+
+if [ ! -d "$DOCROOT" ]; then
+    echo "Error: docroot does not exist (will not create it): $DOCROOT" >&2
+    exit 1
+fi
+
+if [ -L "$DOCROOT" ]; then
+    echo "Error: refusing to deploy to a symlinked docroot: $DOCROOT" >&2
     exit 1
 fi
 
@@ -24,13 +35,45 @@ if ! command -v rsync >/dev/null 2>&1; then
     exit 1
 fi
 
-if [[ "$DOCROOT" != /* ]]; then
-    DOCROOT="${HOME}/${DOCROOT}"
+mkdir -p "$HOME/.oderland-demo-deploy"
+
+resolve_path() {
+    local path=$1
+    if command -v realpath >/dev/null 2>&1; then
+        realpath -e "$path"
+        return
+    fi
+    readlink -f "$path"
+}
+
+DOCROOT_RESOLVED=$(resolve_path "$DOCROOT")
+case "$DOCROOT_RESOLVED" in
+    *"$ALLOWED_SUFFIX") ;;
+    *)
+        echo "Error: resolved docroot is not the pitea-new demo folder: $DOCROOT_RESOLVED" >&2
+        exit 1
+        ;;
+esac
+
+if [ "$DOCROOT_RESOLVED" = "$ALLOWED_SUFFIX" ] || [ "$DOCROOT_RESOLVED" = "/" ]; then
+    echo "Error: refusing unsafe resolved docroot: $DOCROOT_RESOLVED" >&2
+    exit 1
 fi
 
-mkdir -p "$DOCROOT"
+if [ "$(basename "$DOCROOT_RESOLVED")" != "pitea-new.considbrs.se" ] \
+    || [ "$(basename "$(dirname "$DOCROOT_RESOLVED")")" != "domains" ]; then
+    echo "Error: refusing docroot that is not .../domains/pitea-new.considbrs.se: $DOCROOT_RESOLVED" >&2
+    exit 1
+fi
 
-EXTRACT_DIR=$(mktemp -d "${TMPDIR:-/tmp}/oderland-demo.XXXXXX")
+if [ ! -d "$DOCROOT_RESOLVED" ] || [ -L "$DOCROOT_RESOLVED" ]; then
+    echo "Error: resolved docroot must be a real directory: $DOCROOT_RESOLVED" >&2
+    exit 1
+fi
+
+DOCROOT="$DOCROOT_RESOLVED"
+
+EXTRACT_DIR=$(mktemp -d "$HOME/.oderland-demo-deploy/extract.XXXXXX")
 cleanup() {
     rm -rf "$EXTRACT_DIR"
 }
@@ -53,7 +96,7 @@ if [ -d "$EXTRACT_DIR/wp-content/plugins/advanced-custom-fields-pro" ]; then
 fi
 
 echo "Syncing into $DOCROOT"
-rsync -a --delete \
+rsync -a --delete --safe-links \
     --exclude '/config/' \
     --exclude '/wp-content/uploads/' \
     --exclude '/.htaccess' \
@@ -80,8 +123,8 @@ EOF
 fi
 
 echo "Setting permissions: directories=755, files=644"
-find "$DOCROOT" -type d -exec chmod 755 {} +
-find "$DOCROOT" -type f -exec chmod 644 {} +
+find -P "$DOCROOT" -xdev -type d -exec chmod 755 {} +
+find -P "$DOCROOT" -xdev -type f -exec chmod 644 {} +
 
 if [ ! -f "$DOCROOT/config/database.php" ]; then
     echo "Warning: $DOCROOT/config/database.php is missing. Copy config-example/ on the server before the site will boot."
