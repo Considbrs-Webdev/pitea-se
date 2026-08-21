@@ -98,29 +98,6 @@ rsync -a --delete --safe-links \
 
 mkdir -p "$DOCROOT/config" "$DOCROOT/wp-content/uploads"
 
-HTACCESS_TEMPLATE="/home/considbrs/.oderland-demo-deploy/oderland-demo.htaccess"
-if [ -f "$HTACCESS_TEMPLATE" ]; then
-    if [ ! -f "$DOCROOT/.htaccess" ] || ! grep -q "AuthType Basic" "$DOCROOT/.htaccess"; then
-        echo "Installing demo .htaccess with basic auth and upload proxy"
-        cp "$HTACCESS_TEMPLATE" "$DOCROOT/.htaccess"
-        chmod 644 "$DOCROOT/.htaccess"
-    fi
-elif [ ! -f "$DOCROOT/.htaccess" ]; then
-    echo "Warning: $HTACCESS_TEMPLATE missing; writing WordPress .htaccess only"
-    cat > "$DOCROOT/.htaccess" << 'EOF'
-# BEGIN WordPress
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
-  RewriteRule ^index\.php$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.php [L]
-</IfModule>
-# END WordPress
-EOF
-fi
-
 echo "Setting permissions: directories=755, files=644"
 find -P "$DOCROOT" -xdev -type d -exec chmod 755 {} +
 find -P "$DOCROOT" -xdev -type f -exec chmod 644 {} +
