@@ -194,10 +194,7 @@ jobs:
           PORT="${ODERLAND_SSH_PORT:-22}"
           ssh -i ~/.ssh/deploy_key -p "$PORT" -o IdentitiesOnly=yes \
             "${ODERLAND_SSH_USER}@${ODERLAND_SSH_HOST}" \
-            'chmod 700 /home/considbrs/.oderland-demo-deploy/deploy-oderland-demo.sh && \
-             bash /home/considbrs/.oderland-demo-deploy/deploy-oderland-demo.sh \
-               /home/considbrs/.oderland-demo-deploy/release.tar.gz && \
-             rm -f /home/considbrs/.oderland-demo-deploy/release.tar.gz"'
+            'chmod 700 /home/considbrs/.oderland-demo-deploy/deploy-oderland-demo.sh && bash /home/considbrs/.oderland-demo-deploy/deploy-oderland-demo.sh /home/considbrs/.oderland-demo-deploy/release.tar.gz && rm -f /home/considbrs/.oderland-demo-deploy/release.tar.gz'
         env:
           ODERLAND_SSH_HOST: ${{ secrets.ODERLAND_SSH_HOST }}
           ODERLAND_SSH_USER: ${{ secrets.ODERLAND_SSH_USER }}
