@@ -11,9 +11,8 @@ if [ "$(id -u)" -eq 0 ]; then
     exit 1
 fi
 
-TAR_PATH="${1:-$HOME/.oderland-demo-deploy/release.tar.gz}"
-DOCROOT="$HOME/domains/pitea-new.considbrs.se"
-ALLOWED_SUFFIX="/domains/pitea-new.considbrs.se"
+TAR_PATH="${1:-/home/considbrs/.oderland-demo-deploy/release.tar.gz}"
+DOCROOT="/home/considbrs/domains/pitea-new.considbrs.se"
 
 if [ ! -f "$TAR_PATH" ]; then
     echo "Error: tar file not found: $TAR_PATH" >&2
@@ -35,7 +34,7 @@ if ! command -v rsync >/dev/null 2>&1; then
     exit 1
 fi
 
-mkdir -p "$HOME/.oderland-demo-deploy"
+mkdir -p /home/considbrs/.oderland-demo-deploy
 
 resolve_path() {
     local path=$1
@@ -47,22 +46,8 @@ resolve_path() {
 }
 
 DOCROOT_RESOLVED=$(resolve_path "$DOCROOT")
-case "$DOCROOT_RESOLVED" in
-    *"$ALLOWED_SUFFIX") ;;
-    *)
-        echo "Error: resolved docroot is not the pitea-new demo folder: $DOCROOT_RESOLVED" >&2
-        exit 1
-        ;;
-esac
-
-if [ "$DOCROOT_RESOLVED" = "$ALLOWED_SUFFIX" ] || [ "$DOCROOT_RESOLVED" = "/" ]; then
-    echo "Error: refusing unsafe resolved docroot: $DOCROOT_RESOLVED" >&2
-    exit 1
-fi
-
-if [ "$(basename "$DOCROOT_RESOLVED")" != "pitea-new.considbrs.se" ] \
-    || [ "$(basename "$(dirname "$DOCROOT_RESOLVED")")" != "domains" ]; then
-    echo "Error: refusing docroot that is not .../domains/pitea-new.considbrs.se: $DOCROOT_RESOLVED" >&2
+if [ "$DOCROOT_RESOLVED" != "/home/considbrs/domains/pitea-new.considbrs.se" ]; then
+    echo "Error: refusing to deploy anywhere except /home/considbrs/domains/pitea-new.considbrs.se (got $DOCROOT_RESOLVED)" >&2
     exit 1
 fi
 
@@ -73,7 +58,7 @@ fi
 
 DOCROOT="$DOCROOT_RESOLVED"
 
-EXTRACT_DIR=$(mktemp -d "$HOME/.oderland-demo-deploy/extract.XXXXXX")
+EXTRACT_DIR=$(mktemp -d /home/considbrs/.oderland-demo-deploy/extract.XXXXXX)
 cleanup() {
     rm -rf "$EXTRACT_DIR"
 }

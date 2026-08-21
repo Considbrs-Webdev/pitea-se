@@ -176,13 +176,13 @@ jobs:
           PORT="${ODERLAND_SSH_PORT:-22}"
           ssh -i ~/.ssh/deploy_key -p "$PORT" -o IdentitiesOnly=yes \
             "${ODERLAND_SSH_USER}@${ODERLAND_SSH_HOST}" \
-            'mkdir -p "$HOME/.oderland-demo-deploy"'
+            'mkdir -p /home/considbrs/.oderland-demo-deploy'
           scp -i ~/.ssh/deploy_key -P "$PORT" -o IdentitiesOnly=yes \
             release.tar.gz \
-            "${ODERLAND_SSH_USER}@${ODERLAND_SSH_HOST}:.oderland-demo-deploy/release.tar.gz"
+            "${ODERLAND_SSH_USER}@${ODERLAND_SSH_HOST}:/home/considbrs/.oderland-demo-deploy/release.tar.gz"
           scp -i ~/.ssh/deploy_key -P "$PORT" -o IdentitiesOnly=yes \
             scripts/deploy-oderland-demo.sh \
-            "${ODERLAND_SSH_USER}@${ODERLAND_SSH_HOST}:.oderland-demo-deploy/deploy-oderland-demo.sh"
+            "${ODERLAND_SSH_USER}@${ODERLAND_SSH_HOST}:/home/considbrs/.oderland-demo-deploy/deploy-oderland-demo.sh"
         env:
           ODERLAND_SSH_HOST: ${{ secrets.ODERLAND_SSH_HOST }}
           ODERLAND_SSH_USER: ${{ secrets.ODERLAND_SSH_USER }}
@@ -194,10 +194,10 @@ jobs:
           PORT="${ODERLAND_SSH_PORT:-22}"
           ssh -i ~/.ssh/deploy_key -p "$PORT" -o IdentitiesOnly=yes \
             "${ODERLAND_SSH_USER}@${ODERLAND_SSH_HOST}" \
-            'chmod 700 "$HOME/.oderland-demo-deploy/deploy-oderland-demo.sh" && \
-             bash "$HOME/.oderland-demo-deploy/deploy-oderland-demo.sh" \
-               "$HOME/.oderland-demo-deploy/release.tar.gz" && \
-             rm -f "$HOME/.oderland-demo-deploy/release.tar.gz"'
+            'chmod 700 /home/considbrs/.oderland-demo-deploy/deploy-oderland-demo.sh && \
+             bash /home/considbrs/.oderland-demo-deploy/deploy-oderland-demo.sh \
+               /home/considbrs/.oderland-demo-deploy/release.tar.gz && \
+             rm -f /home/considbrs/.oderland-demo-deploy/release.tar.gz"'
         env:
           ODERLAND_SSH_HOST: ${{ secrets.ODERLAND_SSH_HOST }}
           ODERLAND_SSH_USER: ${{ secrets.ODERLAND_SSH_USER }}
