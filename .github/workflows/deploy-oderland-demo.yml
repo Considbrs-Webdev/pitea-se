@@ -183,6 +183,9 @@ jobs:
           scp -i ~/.ssh/deploy_key -P "$PORT" -o IdentitiesOnly=yes \
             scripts/deploy-oderland-demo.sh \
             "${ODERLAND_SSH_USER}@${ODERLAND_SSH_HOST}:/home/considbrs/.oderland-demo-deploy/deploy-oderland-demo.sh"
+          scp -i ~/.ssh/deploy_key -P "$PORT" -o IdentitiesOnly=yes \
+            scripts/oderland-demo.htaccess \
+            "${ODERLAND_SSH_USER}@${ODERLAND_SSH_HOST}:/home/considbrs/.oderland-demo-deploy/oderland-demo.htaccess"
         env:
           ODERLAND_SSH_HOST: ${{ secrets.ODERLAND_SSH_HOST }}
           ODERLAND_SSH_USER: ${{ secrets.ODERLAND_SSH_USER }}
