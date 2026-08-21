@@ -69,7 +69,7 @@ if tar -tzf "$TAR_PATH" | grep -E '(^/)|(^|/)\.\.(/|$)' >/dev/null; then
     echo "Error: tarball contains absolute paths or '..' entries; refusing to extract" >&2
     exit 1
 fi
-tar --no-absolute-names -xzf "$TAR_PATH" -C "$EXTRACT_DIR"
+tar -xzf "$TAR_PATH" -C "$EXTRACT_DIR"
 
 if [ ! -f "$EXTRACT_DIR/wp-config.php" ] || [ ! -d "$EXTRACT_DIR/wp" ]; then
     echo "Error: tarball does not look like a Municipio release (missing wp-config.php or wp/)" >&2
