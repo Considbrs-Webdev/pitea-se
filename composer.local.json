@@ -14,7 +14,7 @@
   ],
   "require": {
     "considbrs-webdev/easy-quicklinks": "1.0.0",
-    "considbrs-webdev/pitea-customisation": "dev-dev",
+    "considbrs-webdev/pitea-customisation": "dev-feat/styleguide-v3-migration",
     "considbrs-webdev/modularity-a-o": "dev-dev",
     "considbrs-webdev/modularity-arcgis-map": "dev-dev",
     "considbrs-webdev/modularity-cta-icon-links": "dev-dev",
