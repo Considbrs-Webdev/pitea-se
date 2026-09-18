@@ -4,17 +4,13 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        imageVariant: 8.3-bookworm
+        imageVariant: 8.3-bullseye
 
     ports:
       - 8080:80
 
     volumes:
       - ../..:/workspaces:cached
-      # Mount host SSH keys read-only so SSH works without agent forwarding.
-      # This is more reliable than forwarding SSH_AUTH_SOCK, which is often
-      # unavailable when VS Code starts Docker.
-      - ${HOME}/.ssh:/home/vscode/.ssh:ro
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
