@@ -22,7 +22,6 @@ This guide provides instructions for setting up and working with the Municipio D
 4. **Configure environment variables**
     The container will auto-create `.devcontainer/.env` from `.env.example` on first start.
     Edit `.devcontainer/.env` and fill in the required values:
-    - `MUNICIPIO_ACF_PRO_KEY` - Required for ACF Pro plugin
     - `MUNICIPIO_GITHUB_TOKEN` - Required for private npm/composer packages
 
 5. **Run setup script**
@@ -151,6 +150,26 @@ The script will:
 - The script requires SSH access to the remote server
 - After migration, access your site at `http://localhost:8080/<LOCAL_SITE_SLUG>`
 
+### SSH Troubleshooting in Devcontainer
+
+If migration fails with either of these errors:
+
+- `Permission denied (publickey)`
+- `Error connecting to agent: Permission denied`
+
+then the container cannot use your SSH key yet.
+
+Run these checks inside the container:
+
+```bash
+echo "$SSH_AUTH_SOCK"
+ls -l "$SSH_AUTH_SOCK"
+ssh-add -l
+ssh -p <SSH_PORT> <REMOTE_SSH>
+```
+
+If `ssh-add -l` fails with `Error connecting to agent: Permission denied`, rebuild/reopen the devcontainer so the latest SSH socket mount and group settings are applied.
+
 ## Documentation for setup-dev-package.sh Script
 The `setup-dev-package.sh` script is a utility designed to streamline the development process by providing a clean and efficient development environment. It automates the process of downloading an editable version of the selected plugin. All other plugins in the environment will be reset to their production release versions. This ensures that only the selected plugin is in a development state, avoiding unnecessary builds for untouched packages.
 
@@ -202,6 +221,91 @@ The script is composed of modular sub-scripts in `.devcontainer/scripts/dev-pack
 | `select-dev-package.sh` | Lists packages and reinstalls selected one from source |
 
 These can be run individually if needed.
+
+### Update sub packages
+
+This script scans the project's Composer dependency tree for packages that block an upgrade of a specific dependency and helps align those packages with a common dependency version.
+
+Only packages that already declare the specified dependency in their `composer.json` are modified. The dependency will **not** be added to packages that do not already require it.
+
+#### Usage
+
+```bash
+.devcontainer/scripts/updateSubPackage.sh \
+    --package='helsingborg-stad/wputilservice' \
+    --version='^0.3'
+```
+
+#### Arguments
+
+| Argument       | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| `--package`    | Composer package whose version constraint should be updated. |
+| `--version`    | The new Composer version constraint to use.                  |
+| `-h`, `--help` | Display usage information.                                   |
+
+For example:
+
+```bash
+.devcontainer/scripts/updateSubPackage.sh \
+    --package='helsingborg-stad/wputilservice' \
+    --version='^0.3'
+```
+
+This finds packages blocking the use of `helsingborg-stad/wputilservice:^0.3` and processes each blocker individually.
+
+#### Process
+
+For each blocking package, the script:
+
+1. Detects the package using `composer prohibits`.
+2. Reinstalls the package using `--prefer-source` to obtain a Git checkout.
+3. Detects and checks out the repository's default branch.
+4. Creates a dedicated update branch.
+5. Updates the existing dependency constraint in `composer.json`.
+6. Updates the Composer lock file and dependencies.
+7. Runs `composer install` to verify that the resulting dependency tree can be installed.
+8. Displays the Git diff for review.
+9. Asks whether the changes should be committed and pushed.
+10. Pushes the update branch and creates a GitHub pull request.
+
+The script processes all detected blockers sequentially.
+
+#### Review options
+
+After displaying the changes for a package, the script provides the following options:
+
+```text
+[p] Push + create PR
+[s] Skip
+[a] Push this and automatically approve remaining packages
+[q] Quit
+```
+
+Selecting `a` allows the remaining blockers to be processed without requiring approval for each individual package.
+
+#### Requirements
+
+The following tools must be installed and available in `PATH`:
+
+* Composer
+* Git
+* GitHub CLI (`gh`)
+
+GitHub CLI must also be authenticated:
+
+```bash
+gh auth login
+```
+
+#### Important
+
+The script operates on Composer packages installed in the project and reinstalls them from source. This includes packages installed by Composer installers under paths such as `wp-content/plugins`.
+
+Local changes inside affected packages under `vendor` may be discarded when the package is prepared for modification. Do not use the script if you have uncommitted work inside these package directories.
+
+At completion, the script displays a summary of successfully created pull requests, failed updates, and skipped packages.
+
 
 ### Notes
 - Ensure you have the necessary permissions to execute the script. You may need to run `chmod +x .devcontainer/scripts/setup-dev-package.sh` to make it executable.
