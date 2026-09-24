@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       YOAST_COMPOSER_TOKEN: ${{ secrets.YOAST_COMPOSER_TOKEN }}
+      ACF_PRO_KEY: ${{ secrets.ACF_PRO_KEY }}
+      ACF_PRO_SITE_URL: ${{ secrets.ACF_PRO_SITE_URL }}
 
     outputs:
       artifact_name: release-package
@@ -64,6 +66,18 @@ jobs:
           "$YOAST_COMPOSER_TOKEN"
         shell: bash
 
+      - name: Validate ACF PRO auth
+        if: env.ACF_PRO_KEY == ''
+        run: |
+          echo "::error::ACF_PRO_KEY secret is required. ACF PRO is installed via Composer (wpengine/advanced-custom-fields-pro)."
+          exit 1
+        shell: bash
+
+      - name: Configure Composer auth for ACF PRO
+        run: composer config --global --auth http-basic.connect.advancedcustomfields.com
+          "$ACF_PRO_KEY" "${ACF_PRO_SITE_URL:-https://www.pitea.se}"
+        shell: bash
+
       - name: Install composer dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
           --optimize-autoloader --classmap-authoritative
@@ -80,13 +94,6 @@ jobs:
           echo "@fortawesome:registry=https://npm.fontawesome.com/" >> ~/.npmrc
           echo "//npm.fontawesome.com/:_authToken=${{ secrets.FONTAWESOME_TOKEN }}" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-        shell: bash
-
-      - name: Download ACF plugin
-        run: |
-          wget "${{ secrets.ACF_URL }}" -O acf.zip
-          unzip -q acf.zip -d wp-content/plugins/
-          rm -f acf.zip
         shell: bash
 
       - name: Execute build scripts
