@@ -174,19 +174,21 @@ SYMLINK_PATH="$ROOT_DIR/htdocs"
 echo "Updating symlink: $SYMLINK_PATH -> $TARGET_DIR"
 ln -sfn "$TARGET_DIR" "$SYMLINK_PATH"
 
-# Clear blade cache
+# Clear blade cache. -maxdepth 1: find must not walk into entries that
+# rm -rf already removed, or it exits 1 after a successful clear.
 echo "Clearing /webb/municipio/tmp/blade-cache..."
 if [ -d "/webb/municipio/tmp/blade-cache" ]; then
-    find "/webb/municipio/tmp/blade-cache" -mindepth 1 -exec rm -rf {} +
+    find "/webb/municipio/tmp/blade-cache" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
 fi
 
 # Clear LiteSpeed page cache on disk. The WP-CLI purge below only does a
 # tag-based/logical invalidation and leaves the cached files in place until
 # LiteSpeed's own garbage collector gets to them, so remove them directly -
 # www-data already owns /data/lscache/pitea, no sudo needed.
+# -maxdepth 1 avoids the same find/rm race as the blade cache clear above.
 echo "Clearing /data/lscache/pitea..."
 if [ -d "/data/lscache/pitea" ]; then
-    find "/data/lscache/pitea" -mindepth 1 -exec rm -rf {} +
+    find "/data/lscache/pitea" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
 fi
 
 # Also send a LiteSpeed purge signal via WP-CLI, which covers other cache
