@@ -26,7 +26,7 @@
     "considbrs-webdev/modularity-opening-hours": "dev-dev",
     "considbrs-webdev/modularity-pitea-hero": "dev-dev",
     "considbrs-webdev/modularity-quick-links": "dev-dev",
-    "considbrs-webdev/modularity-service-info": "dev-dev",
+    "considbrs-webdev/modularity-service-info": "dev-fix/nav-badge-position-styleguide-v3",
     "considbrs-webdev/modularity-step-by-step": "dev-dev",
     "considbrs-webdev/modularity-toc": "dev-dev",
     "considbrs-webdev/modularity-simpleview-events": "dev-dev",
