@@ -13,9 +13,8 @@ test:
     - composer config -g github-oauth.github.com "$GITHUB_TOKEN"
     - echo "@helsingborg-stad:registry=https://npm.pkg.github.com/helsingborg-stad" >> ~/.npmrc
     - echo "//npm.pkg.github.com/:_authToken=$GITHUB_TOKEN" >> ~/.npmrc
-    - wget "$ACF_URL" -O acf.zip
-    - unzip -q acf.zip -d wp-content/mu-plugins/
-    - rm -f acf.zip
+    - test -n "$ACF_PRO_KEY" || (echo "ACF_PRO_KEY is required. ACF PRO is installed via Composer." && exit 1)
+    - composer config --global --auth http-basic.connect.advancedcustomfields.com "$ACF_PRO_KEY" "${ACF_PRO_SITE_URL:-https://www.pitea.se}"
   script:
     - php -v
     - node -v
