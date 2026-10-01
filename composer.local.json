@@ -6,10 +6,6 @@
     {
       "type": "composer",
       "url": "https://wpackagist.org"
-    },
-    {
-      "type": "composer",
-      "url": "https://my.yoast.com/packages/"
     }
   ],
   "require": {
@@ -26,13 +22,12 @@
     "considbrs-webdev/modularity-opening-hours": "dev-dev",
     "considbrs-webdev/modularity-pitea-hero": "dev-dev",
     "considbrs-webdev/modularity-quick-links": "dev-dev",
-    "considbrs-webdev/modularity-service-info": "dev-fix/nav-badge-position-styleguide-v3",
+    "considbrs-webdev/modularity-service-info": "dev-dev",
     "considbrs-webdev/modularity-step-by-step": "dev-dev",
     "considbrs-webdev/modularity-toc": "dev-dev",
     "considbrs-webdev/modularity-simpleview-events": "dev-dev",
     "considbrs-webdev/typesense-search": "dev-dev",
     "williamundqvist/scheduled-page-reviews": "v0.1.5",
-    "wpackagist-plugin/mediaflow": "^2.4.4",
-    "yoast/wordpress-seo-premium": "*"
+    "wpackagist-plugin/mediaflow": "^2.4.4"
   }
 }
