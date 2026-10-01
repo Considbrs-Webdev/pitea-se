@@ -6,6 +6,10 @@
     {
       "type": "composer",
       "url": "https://wpackagist.org"
+    },
+    {
+      "type": "composer",
+      "url": "https://my.yoast.com/packages/"
     }
   ],
   "require": {
@@ -28,6 +32,7 @@
     "considbrs-webdev/modularity-simpleview-events": "dev-dev",
     "considbrs-webdev/typesense-search": "dev-dev",
     "williamundqvist/scheduled-page-reviews": "v0.1.5",
-    "wpackagist-plugin/mediaflow": "^2.4.4"
+    "wpackagist-plugin/mediaflow": "^2.4.4",
+    "yoast/wordpress-seo-premium": "*"
   }
 }
