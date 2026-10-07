@@ -106,7 +106,6 @@
     "humanmade/s3-uploads": "3.0.13",
     "roots/wordpress-core-installer": "v4.0.0",
     "roots/wordpress-no-content": "7.1.1",
-    "municipio-se/modularity-noticeboard": "1.1.0",
     "wp-plugin/autodescription": "5.1.4",
     "wp-plugin/cookies-and-content-security-policy": "2.41",
     "wp-plugin/fakerpress": "0.9.2",
