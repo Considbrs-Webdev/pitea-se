@@ -13,7 +13,7 @@
     }
   ],
   "require": {
-    "considbrs-webdev/easy-quicklinks": "1.0.0",
+    "considbrs-webdev/easy-quicklinks": "1.1.0",
     "considbrs-webdev/pitea-customisation": "dev-dev",
     "considbrs-webdev/modularity-a-o": "dev-dev",
     "considbrs-webdev/modularity-arcgis-map": "dev-dev",
@@ -30,7 +30,7 @@
     "considbrs-webdev/modularity-step-by-step": "dev-dev",
     "considbrs-webdev/modularity-toc": "dev-dev",
     "considbrs-webdev/modularity-simpleview-events": "1.0.0",
-    "considbrs-webdev/typesense-search": "dev-dev",
+    "considbrs-webdev/typesense-search": "1.9.2",
     "considbrs-webdev/renewpage-scheduled-page-reviews": "0.3.0",
     "wpackagist-plugin/mediaflow": "^2.4.4",
     "yoast/wordpress-seo-premium": "*"
