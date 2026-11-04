@@ -29,7 +29,7 @@
     "considbrs-webdev/modularity-service-info": "dev-dev",
     "considbrs-webdev/modularity-step-by-step": "dev-dev",
     "considbrs-webdev/modularity-toc": "dev-dev",
-    "considbrs-webdev/modularity-simpleview-events": "dev-dev",
+    "considbrs-webdev/modularity-simpleview-events": "1.0.0",
     "considbrs-webdev/typesense-search": "dev-dev",
     "considbrs-webdev/renewpage-scheduled-page-reviews": "0.3.0",
     "wpackagist-plugin/mediaflow": "^2.4.4",
