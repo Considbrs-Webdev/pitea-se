@@ -155,9 +155,15 @@ ln -sfn /webb/municipio/uploads "$TARGET_DIR/wp-content/uploads"
 echo "Adding language symlink inside release"
 ln -sfn /webb/municipio/languages "$TARGET_DIR/wp-content/languages"
 
-# Move ACF Pro plugin from plugins to mu-plugins inside the created release
-echo "Moving advanced-custom-fields-pro to mu-plugins inside release"
-mv "$TARGET_DIR/wp-content/plugins/advanced-custom-fields-pro" "$TARGET_DIR/wp-content/mu-plugins/advanced-custom-fields-pro"
+# Move ACF Pro plugin from plugins to mu-plugins inside the created release.
+# From deployment 6.2.5 Composer already installs ACF into mu-plugins, so only move it when the plugins copy exists.
+if [ -d "$TARGET_DIR/wp-content/plugins/advanced-custom-fields-pro" ]; then
+  echo "Moving advanced-custom-fields-pro to mu-plugins inside release"
+  mkdir -p "$TARGET_DIR/wp-content/mu-plugins"
+  rm -rf "$TARGET_DIR/wp-content/mu-plugins/advanced-custom-fields-pro"
+  mv "$TARGET_DIR/wp-content/plugins/advanced-custom-fields-pro" \
+    "$TARGET_DIR/wp-content/mu-plugins/advanced-custom-fields-pro"
+fi
 
 # Ensure correct permissions: release dir 755, all subdirectories 755, files 644
 echo "Setting permissions: directories=755, files=644 in $TARGET_DIR"
